@@ -1,0 +1,13 @@
+{% extends 'AppBundle::layout.html.twig' %}
+
+{% block content %}
+    <h1>Diplomski rad - krenulo je....</h1>
+
+    <p>
+        {{ rot13function('Welcome! Take a look at our')|rot13filter }}
+    </p>
+
+    <a href="{{ path('AppBundle_Welcome_about') }}">About us.</a>
+{% endblock content %}
+
+

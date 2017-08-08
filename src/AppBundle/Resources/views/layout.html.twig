@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/diplomski.css') }}">
+{% endblock %}
+
+{% block body %}
+    <header>
+        <a href="{{ path('AppBundle_Welcome_homepage') }}">
+            <div id="logo"><img src="{{ asset('images/logo.png') }}"></div>
+        </a>
+
+        <span id="userButtonContainer"></span>
+
+        <span id="userButtonTemplate" class="hidden">
+            <a href="__PATH__" class="prijavaOdjava">__USER_NAME__ __USER_SURNAME__ __BUTTON_TITLE__</a>
+        </span>
+    </header>
+    <div id="main">
+        {% block content %}
+        {% endblock %}
+    </div>
+{% endblock body %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/userButton.js') }}"></script>
+    <script type="text/javascript">
+
+    </script>
+{% endblock javascripts %}

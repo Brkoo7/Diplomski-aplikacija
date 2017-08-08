@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services
+        http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="app.main_accommodation_images_dir">%kernel.root_dir%/../src/AppBundle/Resources/images/accommodation/</parameter>
+    </parameters>
+
+    <services>
+        <service id="app.form_search_parameters_type" class="AppBundle\Form\Type\SearchParametersType">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <tag name="form.type" />
+        </service>
+
+        <!--
+            Doctrine Repozitorije možemo definirati kao servise koristeći mogućnost da servis stvorimo preko tzv. factory
+            metode.
+            U ovom slučaju factory metoda je getRepository() u doctrine.orm.entity_manager servisu koja za argument
+            prima repozitorij koji želimo.
+            Sada će kad god zatražimo servis app.accommodation_repository Symfony za nas pozvati na entity manageru
+            metodu getRepository('AppBundle:Accommodation') i vratiti nam njen rezultat, tj. AccommodationRepository.
+
+            @link http://symfony.com/doc/current/service_container/factories.html službena dokumentacija
+        -->
+        <!-- <service id="app.accommodation_repository" class="Agency\Infrastructure\Doctrine\AccommodationRepositoryImpl">
+            <factory service="doctrine.orm.entity_manager" method="getRepository"/>
+            <argument>Agency\Domain\Model\Offer\Accommodation</argument>
+        </service>
+ -->
+        <service id="app.locale_listener" class="AppBundle\EventListener\LocaleListener">
+            <argument>%kernel.default_locale%</argument>
+            <tag name="kernel.event_subscriber" />
+        </service>
+
+        <service id="app.image_service" class="AppBundle\View\ImageService">
+            <argument>%app.main_accommodation_images_dir%</argument>
+        </service>
+    </services>
+</container>
