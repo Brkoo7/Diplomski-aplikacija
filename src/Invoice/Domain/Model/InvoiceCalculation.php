@@ -1,6 +1,6 @@
 <?php
 
-namespace Diplomski\Domain\Model;
+namespace Invoice\Domain\Model;
 
 use Doctrine\ORM\Mapping as ORM;
 use DateTime;
@@ -10,7 +10,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Kalkulacija računa
  *
  * @ORM\Entity
- * @ORM\Table(name = "diplomski_invoice_calculation")
+ * @ORM\Table(name = "invoice_calculation")
  */
 class InvoiceCalculation
 {
@@ -35,6 +35,24 @@ class InvoiceCalculation
      * @ORM\Column(type="string")
      */
     private $currency;
+
+    /**
+     * @var float
+     * @ORM\Columnt(type="float")
+     */
+    private $baseAmount;
+
+    /**
+     * @var float
+     * @ORM\Columnt(type="float")
+     */
+    private $taxAmount;
+
+    /**
+     * @var float
+     * @ORM\Columnt(type="float")
+     */
+    private $totalAmount;
 
     // Tu će biti metode za izračun osnovice, poreza, ukupnog iznosa
     //

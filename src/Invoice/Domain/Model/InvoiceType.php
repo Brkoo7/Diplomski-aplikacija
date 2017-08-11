@@ -1,8 +1,8 @@
 <?php
 
-namespace Diplomski\Domain\Model;
+namespace Invoice\Domain\Model;
 
-class PaymentType
+class InvoiceType
 {
     /**
      * Identifikator vrste
@@ -12,12 +12,9 @@ class PaymentType
     private $id;
 
     /**
-     * Podržane vrste
+     * Podržane vrste racuna
      */
     static private $supported = [
-        1 => ['CASH', 'Gotovina'],
-        2 => ['CREDIT_CARD', 'Kreditna kartica'],
-        3 => ['TRANSACTION_ACCOUNT', 'Transakcijski racun'],
     ];
 
     /**
@@ -28,7 +25,7 @@ class PaymentType
     private function __construct(int $id)
     {
         if (!isset(self::$supported[(int) $id]))
-            throw new InvalidArgumentException(sprintf('Identifikator tipa placanja: %d nije podržan', $id));
+            throw new InvalidArgumentException(sprintf('Identifikator tipa racuna: %d nije podržan', $id));
         $this->id = (int) $id;
     }
 
@@ -47,13 +44,12 @@ class PaymentType
         return $this->id == $other->id;
     }
 
-
-    static public function bankNoteType(): self
+    static public function advanceType(): self
     {
         return new self(1);
     }
 
-    static public function cardType(): self
+    static public function serviceType(): self
     {
         return new self(2);
     }
@@ -61,31 +57,6 @@ class PaymentType
     static public function checkType(): self
     {
         return new self(3);
-    }
-
-    static public function transactionAccountType(): self
-    {
-        return new self(4);
-    }
-
-    public function isBankNotes(): bool
-    {
-        return $this->id == 1;
-    }
-
-    public function isCard(): bool
-    {
-        return $this->id == 2;
-    }
-
-    public function isCheck(): bool
-    {
-        return $this->id == 3;
-    }
-
-    public function isTransactionAccount(): bool
-    {
-        return $this->id == 4;
     }
 
     public function title(): string

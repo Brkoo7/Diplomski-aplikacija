@@ -1,6 +1,6 @@
 <?php
 
-namespace Diplomski\Domain\Model;
+namespace Administration\Domain\Model;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -38,15 +38,10 @@ class Office
     private $address;
 
     /**
-     * @var Seller
-     * @ORM\ManyToOne(targetEntity="Seller", inversedBy="offices")
-     * @ORM\JoinColumn(name="seller_id", referencedColumnName="id", nullable=false)
-     */
-    private $seller;
-
-    /**
-     * @var CashRegister
-     * @ORM\OneToMany(targetEntity="CashRegister", mappedBy="office")
+     * Naplatni uređaji (blagajne)
+     *
+     * @var CashRegister[]
+     * @ORM\OneToMany(targetEntity="CashRegister", mappedBy="administration")
      */
     private $cashRegisters;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Diplomski\Domain\Model;
+namespace Invoice\Domain\Model;
 
 use Doctrine\ORM\Mapping as ORM;
 use DateTime;
@@ -9,7 +9,7 @@ use DateTime;
  * Kalkulacija artikla
  *
  * @ORM\Entity
- * @ORM\Table(name = "diplomski_article_calculation")
+ * @ORM\Table(name = "invoice_article_calculation")
  */
 class ArticleCalculation
 {
@@ -21,7 +21,6 @@ class ArticleCalculation
     private $id;
 
     /**
-     *
      * @ORM\ManyToOne(targetEntity="InvoiceCalculation", inversedBy="articleCalculations")
      */
     private $invoiceCalculation;
@@ -34,11 +33,11 @@ class ArticleCalculation
     private $name;
 
     /**
-     * Cijena artikla s PDV-om
+     * Cijena artikla
      *
      * @ORM\Column(type="float")
      */
-    private $totalPrice;
+    private $price;
 
     /**
      * Količina artikla
@@ -48,9 +47,9 @@ class ArticleCalculation
     private $quantity;
 
     /**
-     * Iznos PDV-a
+     * Postotak PDV-a
      *
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="float")
      */
     private $vatRate;
 

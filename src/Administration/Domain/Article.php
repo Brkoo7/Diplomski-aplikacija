@@ -1,6 +1,6 @@
 <?php
 
-namespace Diplomski\Domain\Model;
+namespace Administration\Domain\Model;
 
 use Doctrine\ORM\Mapping as ORM;
 use DateTime;
@@ -8,10 +8,8 @@ use DateTime;
 /**
  * Artikl (može biti proizvod ili usluga)
  *
- * Tablica koja stoji zasebno odnosno nije povezana s nijednim entitetom.
- *
  * @ORM\Entity
- * @ORM\Table(name = "diplomski_article")
+ * @ORM\Table(name = "administration_article")
  */
 class Article
 {
@@ -22,10 +20,10 @@ class Article
      */
     private $id;
 
-     /**
+    /**
      * Naziv artikla
      *
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", lenght=50)
      */
     private $name;
 
@@ -37,7 +35,7 @@ class Article
     private $totalPrice;
 
     /**
-     * Iznos PDV-a
+     * Postotak PDV-a (u RH može biti 5, 13, 25)
      *
      * @ORM\Column(type="float")
      */

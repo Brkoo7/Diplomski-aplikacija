@@ -1,8 +1,8 @@
 <?php
 
-namespace Diplomski\Domain\Model;
+namespace Invoice\Domain\Model;
 
-class InvoiceType
+class PaymentType
 {
     /**
      * Identifikator vrste
@@ -12,12 +12,13 @@ class InvoiceType
     private $id;
 
     /**
-     * Podržane vrste racuna
+     * Podržane vrste
      */
     static private $supported = [
-        1 => ['INVOICE_ADVANCE', 'Račun za uplaćeni predujam'],
-        2 => ['INVOICE_SERVICE', 'Račun za isporučenu uslugu'],
-        3 => ['INVOICE_CANCEL', 'Stornirani račun'],
+        1 => ['CASH', 'Gotovina'],
+        2 => ['CREDIT_CARD', 'Kartice'],
+        4 => ['TRANSACTION_ACCOUNT', 'Transakcijski račun'],
+        5 => ['OTHER', 'Ostalo'],
     ];
 
     /**
@@ -28,7 +29,7 @@ class InvoiceType
     private function __construct(int $id)
     {
         if (!isset(self::$supported[(int) $id]))
-            throw new InvalidArgumentException(sprintf('Identifikator tipa racuna: %d nije podržan', $id));
+            throw new InvalidArgumentException(sprintf('Identifikator tipa placanja: %d nije podržan', $id));
         $this->id = (int) $id;
     }
 
@@ -47,12 +48,13 @@ class InvoiceType
         return $this->id == $other->id;
     }
 
-    static public function advanceType(): self
+
+    static public function bankNoteType(): self
     {
         return new self(1);
     }
 
-    static public function serviceType(): self
+    static public function cardType(): self
     {
         return new self(2);
     }
@@ -60,6 +62,31 @@ class InvoiceType
     static public function checkType(): self
     {
         return new self(3);
+    }
+
+    static public function transactionAccountType(): self
+    {
+        return new self(4);
+    }
+
+    public function isBankNotes(): bool
+    {
+        return $this->id == 1;
+    }
+
+    public function isCard(): bool
+    {
+        return $this->id == 2;
+    }
+
+    public function isCheck(): bool
+    {
+        return $this->id == 3;
+    }
+
+    public function isTransactionAccount(): bool
+    {
+        return $this->id == 4;
     }
 
     public function title(): string

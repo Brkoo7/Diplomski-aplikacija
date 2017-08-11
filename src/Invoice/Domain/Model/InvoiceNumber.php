@@ -1,6 +1,6 @@
 <?php
 
-namespace Diplomski\Domain\Model;
+namespace Invoice\Domain\Model;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Format: numerički broj računa|oznaka poslovnog prostora|broj naplatnog uređaja
  *
  * @ORM\Entity
- * @ORM\Table(name="diplomski_invoice_number")
+ * @ORM\Table(name="invoice_number")
  */
 class InvoiceNumber
 {
@@ -38,10 +38,10 @@ class InvoiceNumber
     private $office;
 
     /**
-     * Broj naplatnog uređaja.
+     * Oznaka naplatnog uređaja.
      *
-     * @var int
-     * @ORM\Column(name="cash_register", type="integer")
+     * @var string
+     * @ORM\Column(name="cash_register", type="string")
      */
     private $cashRegister;
 }

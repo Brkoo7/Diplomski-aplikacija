@@ -1,22 +1,18 @@
 <?php
 
-namespace Diplomski\Domain\Model;
+namespace Invoice\Domain\Model;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use DateTime;
 
 /**
- * Bazna klasa stranke računa (prodavatelj ili kupac)
+ * Prodavatelj.
  *
  * @ORM\Entity
- * @ORM\Table(name="diplomski_base_party")
- * @ORM\InheritanceType("SINGLE_TABLE")
- * @ORM\DiscriminatorColumn(name="party_type", type="string")
- * @ORM\DiscriminatorMap({
- *  "SELLER" = "Seller",
- *  "BUYER" = "Buyer"
- * })
+ * @ORM\Table(name="invoice_seller")
  */
-abstract class BaseParty
+class Seller
 {
     /**
      * @Orm\Id
@@ -102,4 +98,19 @@ abstract class BaseParty
      * @ORM\Column(name="country_code", type="string", length=20)
      */
     protected $countryCode = '';
+
+    /**
+     * Da li je prodavatelj u sustavu PDV-a
+     *
+     * @var bool
+     *
+     * @ORM\Column(name="in_vat_system", type="boolean")
+     */
+    private $inVATSystem = true;
+
+
+    public function __construct()
+    {
+        $this->offices = new ArrayCollection();
+    }
 }

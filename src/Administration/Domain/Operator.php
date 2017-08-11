@@ -1,6 +1,6 @@
 <?php
 
-namespace Diplomski\Domain\Model;
+namespace Administration\Domain\Model;
 
 use Doctrine\ORM\Mapping as ORM;
 use DateTime;
@@ -21,7 +21,7 @@ class Operator
     private $id;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", lenght=15)
      */
     private $oib;
 
@@ -40,4 +40,10 @@ class Operator
      * @ORM\Column(type="string")
      */
     private $name;
+
+    /**
+     * @var CashRegister
+     * @ORM\ManyToOne(targetEntity="CashRegister", inversedBy="operators")
+     */
+    private $cashRegister;
 }
