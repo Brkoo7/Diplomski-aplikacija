@@ -1,0 +1,107 @@
+{% extends 'AppBundle::layout.html.twig' %}
+
+{% block content %}
+
+  <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading"></div>
+            <div class="panel-body">
+                <p>Da bi se izdavali računi potrebno je osigurati da su unešeni sljedeći podaci: </p>
+                <ul>
+                    <li>
+                        Podaci prodavatelja <span class="status"></span>
+                    </li>
+                    <li>
+                        Podaci poslovnog prostora 
+                        <span class="status"></span>
+                    </li>
+                    <li>
+                        Podaci naplatnog uređaja <span class="status"></span>
+                    </li>
+                    <li>
+                        Podaci operatera <span class="status"></span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading">Kupci i artikli</div>
+            <div class="panel-body">
+                <div class="col-md-3 col-md-offset-2">
+                    <div class="thumbnail">
+                        <div class="caption">
+                            <p>
+                                Dodavanje, brisanje i ažuriranje podataka o kupcima
+                            </p>
+                            <h3><a href="{{path('AppBundle_Administration_buyers')}}" class="btn btn-primary btn-lg" role="button">Upravljanje kupcima</a></h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-md-offset-2">
+                    <div class="thumbnail">
+                        <div class="caption">
+                            <p>
+                                Dodavanje, brisanje i ažuriranje podataka o artiklima
+                            </p>
+                            <h3><a href="{{path('AppBundle_Administration_articles')}}" class="btn btn-primary btn-lg" role="button">Upravljanje artiklima</a></h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading">Podaci o tvrtci</div>
+            <div class="panel-body">
+                <div class="col-md-3">
+                    <div class="thumbnail">
+                        <div class="caption">
+                            <p>
+                                Ažuriranje općih podataka tvrtke
+                            </p>
+                            <h3><a href="{{path('AppBundle_Administration_seller')}}" class="btn btn-primary btn-lg" role="button">Opći podaci</a></h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="thumbnail">
+                        <div class="caption">
+                            <p>
+                                Poslovni prostori
+                            </p>
+                            <h3><a href="{{path('AppBundle_Administration_offices')}}" class="btn btn-primary btn-lg" role="button">Poslovni prostori</a></h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="thumbnail">
+                        <div class="caption">
+                            <p>
+                                Naplatni uređaji
+                            </p>
+                            <h3><a href="{{path('AppBundle_Administration_buyers')}}" class="btn btn-primary btn-lg" role="button">Naplatni uređaji</a></h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="thumbnail">
+                        <div class="caption">
+                            <p>
+                                Operateri (blagajnici)
+                            </p>
+                            <h3><a href="{{path('AppBundle_Administration_operators')}}" class="btn btn-primary btn-lg" role="button">Operateri</a></h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

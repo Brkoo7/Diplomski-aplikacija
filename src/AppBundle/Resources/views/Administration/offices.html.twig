@@ -1,0 +1,52 @@
+{% extends 'AppBundle::layout.html.twig' %}
+
+{% block content %}
+    <ol class="breadcrumb">
+        <li>
+            <i class="fa fa-dashboard"></i><a href="{{path('AppBundle_Administration_home')}}">Administracija</a>
+        </li>
+        <li class="active">
+            <i class="fa fa-file"></i>Poslovni prostori
+        </li>
+    </ol>
+    <div class="row administration-title">
+        <a href="{{path('AppBundle_Administration_addOffice')}}"><button type="button" id="addOneItem" class="btn btn-lg btn-info col-md-2 col-md-offset-5">
+            Unesi novog
+        </button></a>
+    </div>
+
+    <div class="row">
+        <ul class="list-group col-md-12">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Redni broj</th>
+                        <th>Oznaka</th>
+                        <th>Adresa</th>
+                        <th>Opcije</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for office in offices %}
+                        <tr>
+                            <td>{{loop.index}}</td>
+                            <td>{{office.label}}</td>
+                            <td>{{office.address}}</td>
+                            <td>
+                                <a href="{{ path('AppBundle_Administration_editOffice', {'officeId': office.id})}}"> <button type="button" class="btn btn-xs btn-primary">Uredi</button></a>
+                                <a href="{{ path('AppBundle_Administration_deleteOffice', {'officeId': office.id})}}"> <button type="button" class="btn btn-xs btn-danger">Izbriši</button></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </ul>
+    </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{parent() }}
+
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'AppBundle::layout.html.twig' %}
+
+{% block content %}
+    <ol class="breadcrumb">
+        <li>
+            <i class="fa fa-dashboard"></i><a href="{{path('AppBundle_Administration_home')}}">Administracija</a>
+        </li>
+        <li class="active">
+            <i class="fa fa-file"></i>Kupci
+        </li>
+    </ol>
+    <div class="row administration-title">
+        <div class="form-group col-md-4">
+            <input type="text" placeholder="Pretraživanje po nazivu" class="form-control" id="usr">
+        </div>
+        <a href="{{path('AppBundle_Administration_addBuyer')}}"><button type="button" id="addOneItem" class="btn btn-lg btn-info col-md-2 col-md-offset-5">
+            Unesi novog
+        </button></a>
+    </div>
+
+    <div class="row">
+        <ul class="list-group col-md-12">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Redni broj</th>
+                        <th>Ime i prezime</th>
+                        <th>Adresa</th>
+                        <th>OIB</th>
+                        <th>PDV ID broj</th>
+                        <th>Opcije</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for buyer in buyers %}
+                        <tr>
+                            <td>{{loop.index}}</td>
+                            <td>{{buyer.name}}</td>
+                            <td>{{buyer.oib}}</td>
+                            <td>{{buyer.pdvID}}</td>
+                            <td>{{buyer.address}}</td>
+                            <td>
+                                <a href="{{ path('AppBundle_Administration_editBuyer', {'buyerId': buyer.id})}}"> <button type="button" class="btn btn-xs btn-primary">Uredi</button></a>
+                                <a href="{{ path('AppBundle_Administration_deleteBuyer', {'buyerId': buyer.id})}}"> <button type="button" class="btn btn-xs btn-danger">Izbriši</button></a>
+                            </td>
+                        </tr>
+                    {% endfor %} 
+                </tbody>
+            </table>
+        </ul>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+{{parent() }}
+
+{% endblock %}

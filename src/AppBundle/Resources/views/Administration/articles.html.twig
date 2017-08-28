@@ -1,0 +1,57 @@
+{% extends 'AppBundle::layout.html.twig' %}
+
+{% block content %}
+    <ol class="breadcrumb">
+        <li>
+            <i class="fa fa-dashboard"></i><a href="{{path('AppBundle_Administration_home')}}">Administracija</a>
+        </li>
+        <li class="active">
+            <i class="fa fa-file"></i>Artikli
+        </li>
+    </ol>
+    <div class="row administration-title">
+        <div class="form-group col-md-4">
+            <input type="text" placeholder="Pretraživanje po nazivu" class="form-control" id="usr">
+        </div>
+        <a href="{{path('AppBundle_Administration_addArticle')}}"><button type="button" id="addOneItem" class="btn btn-lg btn-info col-md-2 col-md-offset-5">
+            Unesi novog
+        </button></a>
+    </div>
+
+    <div class="row">
+        <ul class="list-group col-md-12">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Redni broj</th>
+                        <th>Naziv</th>
+                        <th>Cijena</th>
+                        <th>Iznos PDV-a</th>
+                        <th>Postavke</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for article in articles %}
+                        <tr>
+                            <td>{{loop.index}}</td>
+                            <td>{{article.name}}</td>
+                            <td>{{article.totalPrice}}</td>
+                            <td>{{article.taxRate}}</td>
+                            <td>
+                                <a href="{{ path('AppBundle_Administration_editArticle', {'articleId': article.id})}}"> <button type="button" class="btn btn-xs btn-primary">Uredi</button></a>
+                                <a href="{{ path('AppBundle_Administration_deleteArticle', {'articleId': article.id})}}"> <button type="button" class="btn btn-xs btn-danger">Izbriši</button></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </ul>
+    </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{parent() }}
+
+{% endblock %}

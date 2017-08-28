@@ -1,29 +1,47 @@
 {% extends 'base.html.twig' %}
 
-{% block stylesheets %}
-    <link rel="stylesheet" type="text/css" href="{{ asset('css/diplomski.css') }}">
-{% endblock %}
-
 {% block body %}
-    <header>
-        <a href="{{ path('AppBundle_Welcome_homepage') }}">
-            <div id="logo"><img src="{{ asset('images/logo.png') }}"></div>
-        </a>
+    <nav class="navbar navbar-default container">    
+    <div class="container">
+            <div class="navbar-header">
+                <div class="navbar-brand" id="app-header">
+                    <img id="logo" src="{{asset('images/cash_register.ico') }}" height="60px" width="60px" />
+                    <span>eRAČUN</span>
+                </div>
+            </div>
+            <ul class="nav navbar-nav" id="links">
+                <li><a href="{{path('AppBundle_Administration_home')}}">Administracija</a></li>
+                <li><a href="{{path('AppBundle_Administration_home')}}">Računi</a></li>
+            </ul>
+            <div id="user-data" class="pull-right">
+                {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                <span id="user-name">
+                    {{ app.user.username }}
+                </span>
+                    <a class="btn-sm btn-info"href="{{ path('logout') }}">Odjavi se</a>
+                </button>
+                {% else %}
+                    <button class="btn-sm btn-info">
+                        <a class="btn-sm btn-info"href="{{ path('AppBundle_Security_login') }}">Prijavi se</a>
+                    </button>
+                {% endif %}
+            </div> 
+        </div>
+        </nav>
+    <main>
+        <div class="container" id="content-container">
+            {% block content %}
 
-        <span id="userButtonContainer"></span>
-
-        <span id="userButtonTemplate" class="hidden">
-            <a href="__PATH__" class="prijavaOdjava">__USER_NAME__ __USER_SURNAME__ __BUTTON_TITLE__</a>
-        </span>
-    </header>
-    <div id="main">
-        {% block content %}
-        {% endblock %}
-    </div>
+            {% endblock content %}
+        </div>
+    </main>
+    <footer class="container">
+        eRacun je izrađen u svrhu diplomskog rada.
+    </footer>
 {% endblock body %}
 
 {% block javascripts %}
-    <script src="{{ asset('js/userButton.js') }}"></script>
+    {{ parent()}}
     <script type="text/javascript">
 
     </script>

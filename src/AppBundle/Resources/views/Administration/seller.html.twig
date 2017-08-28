@@ -1,0 +1,61 @@
+{% extends 'AppBundle::layout.html.twig' %}
+
+{% block content %}
+    <ol class="breadcrumb">
+        <li>
+            <i class="fa fa-dashboard"></i><a href="{{path('AppBundle_Administration_home')}}">Administracija</a>
+        </li>
+        <li class="active">
+            <i class="fa fa-file"></i>Prodavatelj
+        </li>
+    </ol>
+    <div class="row administration-title">
+        <a href="{{path('AppBundle_Administration_addSeller')}}"><button type="button" id="addOneItem" class="btn btn-lg btn-info col-md-2 col-md-offset-5">
+            Unesi novog
+        </button></a>
+    </div>
+
+    <div class="row">
+        <ul class="list-group col-md-12">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Naziv tvrtke</th>
+                        <th>Vlasnik</th>
+                        <th>OIB</th>
+                        <th>PDV ID</th>
+                        <th>Broj telefona</th>
+                        <th>E-mail</th>
+                        <th>Adresa</th>
+                        <th>U sustavu PDV-a</th>
+                        <th>E-mail</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if not seller is null %}
+                    <tr>
+                        <td>{{seller.companyName}}</td>
+                        <td>{{seller.personName}}</td>
+                        <td>{{seller.oib}}</td>
+                        <td>{{seller.pdvID}}</td>
+                        <td>{{seller.phoneNumber}}</td>
+                        <td>{{seller.email}}</td>
+                        <td>{{seller.street}}</td>
+                        <td>{{seller.postalCode}}</td>
+                        <td>{{seller.city}}</td>
+                        <td>{{seller.countryCode}}</td>
+                        <td>{{seller.inVATSystem}}</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </ul>
+    </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{parent() }}
+
+{% endblock %}

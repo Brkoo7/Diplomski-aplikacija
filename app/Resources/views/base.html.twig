@@ -2,16 +2,26 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>{% block title %}{% endblock %} | Diplomski - Online-racun</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <script src="{{ asset('js/jquery/jquery.min.js') }}"></script>
-        {% block stylesheets %}{% endblock %}
+        <title>{% block title %}{% endblock %} | Diplomski - eRAČUN</title>
+
+        {% block stylesheets %}
+            <link rel="stylesheet" type="text/css" href="{{ asset('css/vendor/bootstrap.min.css') }}" />
+            <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}" />
+            <link rel="stylesheet" type="text/css" href="{{ asset('css/vendors/font-awesome.min.css') }}" />
+        {% endblock %}
 
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
         {% block body %}{% endblock %}
 
-        {% block javascripts %}{% endblock %}
+        {% block javascripts %}
+            <script type="text/javascript" src="{{ asset('js/vendor/bootstrap.min.js') }}"></script>
+            <script type="text/javascript" src="{{ asset('js/vendor/jquery.min.js') }}"></script>
+
+        {% endblock %}
     </body>
 </html>
