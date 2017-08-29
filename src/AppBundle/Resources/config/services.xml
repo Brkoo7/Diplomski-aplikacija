@@ -14,39 +14,12 @@
             <tag name="form.type" />
         </service>
 
-        <service id="app.buyer_repository"
-            class="IssueInvoices\Infrastructure\Doctrine2\BuyerRepositoryImpl">
+        <service id="app.administration_repository"
+            class="IssueInvoices\Infrastructure\Doctrine2\AdministrationRepositoryImpl">
             <factory service="doctrine.orm.entity_manager" method="getRepository"/>
-            <argument>IssueInvoices\Domain\Model\Administration\Buyer</argument>
+            <argument>IssueInvoices\Domain\Model\Administration\Administration</argument>
         </service>
 
-        <service id="app.article_repository"
-            class="IssueInvoices\Infrastructure\Doctrine2\ArticleRepositoryImpl">
-            <factory service="doctrine.orm.entity_manager" method="getRepository"/>
-            <argument>IssueInvoices\Domain\Model\Administration\Article</argument>
-        </service>
-
-        <service id="app.seller_repository"
-            class="IssueInvoices\Infrastructure\Doctrine2\SellerRepositoryImpl">
-            <factory service="doctrine.orm.entity_manager" method="getRepository"/>
-            <argument>IssueInvoices\Domain\Model\Administration\Seller</argument>
-        </service>
-
-        <service id="app.office_repository"
-            class="IssueInvoices\Infrastructure\Doctrine2\OfficeRepositoryImpl">
-            <factory service="doctrine.orm.entity_manager" method="getRepository"/>
-            <argument>IssueInvoices\Domain\Model\Administration\Office</argument>
-        </service>
-
-        <service id="app.operator_repository"
-            class="IssueInvoices\Infrastructure\Doctrine2\OperatorRepositoryImpl">
-            <factory service="doctrine.orm.entity_manager" method="getRepository"/>
-            <argument>IssueInvoices\Domain\Model\Administration\Operator</argument>
-        </service>
-
-        <service id="app.administration_service" class="IssueInvoices\Application\Service\AdministrationService">
-            <argument type="service" id="app.buyer_repository" /> 
-        </service>
         <!--
             Doctrine Repozitorije možemo definirati kao servise koristeći mogućnost da servis stvorimo preko tzv. factory
             metode.

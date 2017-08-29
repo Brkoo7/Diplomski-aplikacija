@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Form\Type\User\UserType;
 use IssueInvoices\Domain\Model\User\User;
+use IssueInvoices\Domain\Model\Administration\Administration;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -53,6 +54,9 @@ class SecurityController extends Controller
     {
         // 1) build the form
         $user = new User();
+        $administration = new Administration();
+        $user->setAdministration($administration);
+
         $form = $this->createForm(UserType::class, $user);
 
         // 2) handle the submit (will only happen on POST)

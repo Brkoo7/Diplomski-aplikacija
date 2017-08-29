@@ -168,9 +168,19 @@ class Seller
         $this->inVatSystem = $inVatSystem;
     }
 
+    public function setAdministration($administration)
+    {
+        $this->administration = $administration;
+    }
+
     public function getCompanyName()
     {
         return $this->companyName;
+    }
+
+    public function getInVatSystem()
+    {
+        return $this->inVATSystem;
     }
 
     public function getPersonName()
@@ -198,8 +208,28 @@ class Seller
         return $this->email;
     }
 
-    public function getIsInVATSystem()
+    public function getStreet()
     {
-        return $this->inVATSystem;
+        return $this->street;
+    }
+
+    public function getPostalCode()
+    {
+        return $this->postalCode;
+    }
+
+    public function getCity()
+    {
+        return $this->street;
+    }
+
+    public function getCountryCode()
+    {
+        return $this->countryCode;
+    }
+
+    public function getId()
+    {
+        return $this->id;
     }
 }

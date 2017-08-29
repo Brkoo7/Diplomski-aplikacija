@@ -17,10 +17,8 @@ class SellerController extends Controller
     public function sellerAction(Request $request)
     {
         $userAdministration = $this->getUser()->getAdministration();
-        $userAdministrationId = $userAdministration->getId();
-        // Dohvatiti sve kupce iz repozitorija i prikazati
-        $seller = $this->get('app.seller_repository')->findSellerForUserAdministration($userAdministrationId);
 
+        $seller = $userAdministration->getSeller();
         return $this->render('AppBundle:Administration:seller.html.twig', [
             'seller' => $seller
         ]);
@@ -42,12 +40,11 @@ class SellerController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $formSeller = $form->getData();
             $entityManager = $this->getDoctrine()->getManager();
-            dump($formSeller);
-            $seller = new SellerFactory($formSeller);
 
-            // Spremiti
-            $seller->setAdministration($administration);
-            $entityManager->persist($seller);
+            $seller = (new SellerFactory())->fromData($formSeller);
+
+            $userAdministration->setSeller($seller);
+            $entityManager->persist($userAdministration);
             $entityManager->flush();
 
             return $this->redirectToRoute('AppBundle_Administration_seller');
@@ -63,33 +60,36 @@ class SellerController extends Controller
      */
     public function editSellerAction(Request $request, int $sellerId)
     {
-        $formBuyer = new FormBuyer();
+        $formSeller = new FormSeller();
 
-        // Nađi kupca za poslani slug u ruti
-        $buyer = $this->get('app.buyer_repository')->find($buyerId);
+        $userAdministration = $this->getUser()->getAdministration();
+        $seller = $userAdministration->getSeller();
 
-        $formBuyer->name = $buyer->getName();
-        $formBuyer->oib = $buyer->getOib();
-        $formBuyer->pdvID = $buyer->getPdvID();
-        $formBuyer->address = $buyer->getAddress();
+        $formSeller->companyName = $seller->getCompanyName();
+        $formSeller->personName = $seller->getPersonName();
+        $formSeller->oib = $seller->getOib();
+        $formSeller->pdvID = $seller->getPdvID();
+        $formSeller->phoneNumber = $seller->getPhoneNumber();
+        $formSeller->email = $seller->getEmail();
+        $formSeller->street = $seller->getStreet();
+        $formSeller->postalCode = $seller->getPostalCode();
+        $formSeller->city = $seller->getCity();
+        $formSeller->countryCode = $seller->getCountryCode();
+        $formSeller->inVATSystem = $seller->getInVatSystem();
 
-        $form = $this->createForm(BuyerType::class, $formBuyer);
+        $form = $this->createForm(SellerType::class, $formSeller);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $formBuyer = $form->getData();
+            $formSeller = $form->getData();
             $entityManager = $this->getDoctrine()->getManager();
-            
-            $buyer->setName($formBuyer->name);
-            $buyer->setOib($formBuyer->oib);
-            $buyer->setPDVId($formBuyer->pdvID);
-            $buyer->setAddress($formBuyer->address);
+            $seller = (new SellerFactory())->fromDataAndObject($formSeller, $seller);
 
             $entityManager->flush();
-            return $this->redirectToRoute('AppBundle_Administration_buyers'); 
+            return $this->redirectToRoute('AppBundle_Administration_seller'); 
         }
 
-        return $this->render('AppBundle:Administration:addBuyer.html.twig', [
+        return $this->render('AppBundle:Administration:addSeller.html.twig', [
             'form' => $form->createView(),
         ]);
     }

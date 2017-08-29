@@ -56,6 +56,12 @@ class Office
         $this->cashRegisters = new ArrayCollection();
     }
 
+    public function addCashRegister($cashRegister)
+    {
+        $cashRegister->setOffice($this);
+        $this->cashRegisters->add($cashRegister);
+    }
+
     public function setLabel(string $label)
     {
         $this->label = $label;
@@ -84,5 +90,10 @@ class Office
     public function getId()
     {
         return $this->id;
+    }
+
+    public function getCashRegisters()
+    {
+        return $this->cashRegisters;
     }
 }

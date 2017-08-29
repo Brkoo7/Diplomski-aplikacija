@@ -16,10 +16,9 @@ class BuyerController extends Controller
     public function buyersAction(Request $request)
     {
         $userAdministration = $this->getUser()->getAdministration();
-        $userAdministrationId = $userAdministration->getId();
 
         // Dohvatiti sve kupce iz repozitorija i prikazati
-        $buyers = $this->get('app.buyer_repository')->findAllForUserAdministration($userAdministrationId);
+        $buyers = $userAdministration->getBuyers();
 
         return $this->render('AppBundle:Administration:buyers.html.twig', [
             'buyers' => $buyers
@@ -46,8 +45,7 @@ class BuyerController extends Controller
             $buyer->setOib($formBuyer->oib);
             $buyer->setPDVId($formBuyer->pdvID);
             $buyer->setAddress($formBuyer->address);
-            $buyer->setAdministration($userAdministration);
-            
+
             $userAdministration->addBuyer($buyer);
 
             $entityManager->persist($userAdministration);
@@ -69,7 +67,8 @@ class BuyerController extends Controller
         $formBuyer = new FormBuyer();
 
         // Nađi kupca za poslani slug u ruti
-        $buyer = $this->get('app.buyer_repository')->find($buyerId);
+        $userAdministration = $this->getUser()->getAdministration();
+        $buyer = $userAdministration->getBuyerById($buyerId);
 
         $formBuyer->name = $buyer->getName();
         $formBuyer->oib = $buyer->getOib();
@@ -103,9 +102,9 @@ class BuyerController extends Controller
     public function deleteBuyerAction(int $buyerId)
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $buyer = $this->get('app.buyer_repository')->findOneById($buyerId);
+        $userAdministration = $this->getUser()->getAdministration();
+        $userAdministration->removeBuyerById($buyerId);
 
-        $entityManager->remove($buyer);
         $entityManager->flush();
 
         return $this->redirectToRoute('AppBundle_Administration_buyers');

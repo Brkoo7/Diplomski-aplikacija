@@ -3,7 +3,6 @@
 namespace IssueInvoices\Domain\Model\Administration;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 use DateTime;
 
 /**
@@ -35,13 +34,23 @@ class CashRegister
      */
     private $office;
 
-    public function __construct()
+    public function setOffice($office)
     {
-        $this->operators = new ArrayCollection();
+        $this->office = $office;
     }
 
     public function setLabel(string $label)
     {
         $this->label = $label;
+    }
+
+    public function getLabel()
+    {
+        return $this->label;
+    }
+
+    public function getOffice()
+    {
+        return $this->office;
     }
 }

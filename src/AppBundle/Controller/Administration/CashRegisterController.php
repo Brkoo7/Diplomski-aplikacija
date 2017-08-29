@@ -11,60 +11,63 @@ use IssueInvoices\Domain\Model\Administration\CashRegister;
 class CashRegisterController extends Controller
 {
     /**
-     * @Route("/administration/cashRegister", name="AppBundle_Administration_cashRegister")
+     * @Route("/administration/cashregisters",name="AppBundle_Administration_cashRegisters")
      */
-    public function cashRegisterAction(Request $request)
+    public function cashRegistersAction(Request $request)
     {
-        $user = $this->container->get('security.token_storage')->getToken()->getUser();
-        // Dohvatiti sve kupce iz repozitorija i prikazati
-        $offices = $this->get('app.cash_register_repository')
-                    ->findAllForUserAdministration();
+        $userAdministration = $this->getUser()->getAdministration();
+        $cashRegisters = $userAdministration->getCashRegisters();
 
-        return $this->render('AppBundle:Administration:offices.html.twig', [
-            'offices' => $offices
+        return $this->render('AppBundle:Administration:cashRegisters.html.twig', [
+            'cashRegisters' => $cashRegisters
         ]);
     }
 
     /**
-     * @Route("/administration/office/add", name="AppBundle_Administration_addOffice")
+     * @Route("/administration/cashRegister/add", name="AppBundle_Administration_addCashRegister")
      */
-    public function addOfficeAction(Request $request)
+    public function addCashRegisterAction(Request $request)
     {
-        $formOffice = new FormOffice();
-        $form = $this->createForm(OfficeType::class, $formOffice);
+        $formCashRegister = new FormCashRegister();
+        // Dohvatiti administraciju prijavljenog korisnika
+        $offices = $this->getUser()->getAdministration()->getOffices();
+
+        $form = $this->createForm(
+            CashRegisterType::class, 
+            $formCashRegister,
+            ['offices' => $offices]
+        );
 
         $form->handleRequest($request);
 
-        // Dohvatiti prijavljenog korisnika i njegovu administraciju
-        $user = $this->container->get('security.token_storage')->getToken()->getUser();
-        $administration = $user->getAdministration();
-
         if ($form->isSubmitted() && $form->isValid()) {
-            $formOffice = $form->getData();
+            $formCashRegister = $form->getData();
             $entityManager = $this->getDoctrine()->getManager();
 
-            $office = new Office();
-            $office->setLabel($formOffice->label);
-            $office->setAddress($formOffice->address);
-            $office->setAdministration($administration);
+            $cashRegister = new CashRegister();
+            $cashRegister->setLabel($formCashRegister->label);
+            
+            // Pronaci office za $formCashRegister->office
+            $office = $userAdministration->getOfficeById($office->getId());
+            $userAdministration->addCashRegisterForOffice($cashRegister, $office);
 
-            $entityManager->persist($office);
+            $entityManager->persist($userAdministration);
             $entityManager->flush();
 
-            return $this->redirectToRoute('AppBundle_Administration_offices');
+            return $this->redirectToRoute('AppBundle_Administration_cashRegisters');
         }
 
-        return $this->render('AppBundle:Administration:addOffice.html.twig', [
+        return $this->render('AppBundle:Administration:addCashRegister.html.twig', [
             'form' => $form->createView()
         ]);
     }
 
     /**
-     * @Route("/administration/office/edit/{officeId}", name="AppBundle_Administration_editOffice")
+     * @Route("/administration/cashRegister/edit/{cashRegisterId}", name="AppBundle_Administration_editCashRegister")
      */
-    public function editOfficeAction(Request $request, int $officeId)
+    public function editCashRegisterAction(Request $request, int $cashRegisterId)
     {
-        $formOffice = new FormOffice();
+        $formCashRegister = new FormCashRegister();
 
         // Nađi poslovni prostor za poslani slug u ruti
         $office = $this->get('app.office_repository')->find($officeId);

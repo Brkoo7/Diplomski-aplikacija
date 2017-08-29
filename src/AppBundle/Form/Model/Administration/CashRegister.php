@@ -6,7 +6,13 @@ use AppBundle\Validator\Constraints as AcmeAssert;
 
 class CashRegister
 {
+    /**
+     * @Assert\NotBlank
+     */
     public $label;
-    public $operators;
+
+    /**
+     * @Assert\NotBlank
+     */
     public $office;
 }

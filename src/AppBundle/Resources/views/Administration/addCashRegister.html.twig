@@ -1,0 +1,30 @@
+{% extends 'AppBundle::layout.html.twig' %}
+
+{% block content %}
+    <ol class="breadcrumb">
+        <li>
+            <i class="fa fa-dashboard"></i><a href="{{path('AppBundle_Administration_home')}}">Administracija</a>
+        </li>
+        <li>
+            <i class="fa fa-file"></i><a href="{{path('AppBundle_Administration_operators')}}">Naplatni uređaji</a>
+        </li>
+
+        <li class="active">
+            <i class="fa fa-file"></i>Novi
+        </li>
+    </ol>
+    <div class="row">
+        <div class="col-md-5">
+            <hr />
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+            <button type="submit" class="btn btn-primary">Save</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+{{parent() }}
+
+{% endblock %}

@@ -16,9 +16,7 @@ class OperatorController extends Controller
     public function operatorsAction(Request $request)
     {
         $userAdministration = $this->getUser()->getAdministration();
-        $userAdministrationId = $userAdministration->getId();
-        // Dohvatiti sve kupce iz repozitorija i prikazati
-        $operators = $this->get('app.operator_repository')->findAllForUserAdministration($userAdministrationId);
+        $operators = $userAdministration->getOperators();
 
         return $this->render('AppBundle:Administration:operators.html.twig', [
             'operators' => $operators
@@ -66,8 +64,8 @@ class OperatorController extends Controller
     {
         $formOperator = new FormOperator();
 
-        // Nađi poslovni prostor za poslani slug u ruti
-        $operator = $this->get('app.operator_repository')->find($operatorId);
+        $userAdministration = $this->getUser()->getAdministration();
+        $operator = $userAdministration->getOperatorById($operatorId);
 
         $formOperator->name = $operator->getName();
         $formOperator->oib = $operator->getOib();
@@ -84,7 +82,6 @@ class OperatorController extends Controller
             $operator->setOib($formOperator->oib);
             $operator->setLabel($formOperator->label);
 
-            $entityManager->persist($operator);
             $entityManager->flush();
 
             return $this->redirectToRoute('AppBundle_Administration_operators'); 
@@ -101,9 +98,9 @@ class OperatorController extends Controller
     public function deleteOperatorAction(int $operatorId)
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $operator = $this->get('app.operator_repository')->findOneById($operatorId);
+        $userAdministration = $this->getUser()->getAdministration();
+        $userAdministration->removeOperatorById($operatorId);
 
-        $entityManager->remove($operator);
         $entityManager->flush();
 
         return $this->redirectToRoute('AppBundle_Administration_operators');

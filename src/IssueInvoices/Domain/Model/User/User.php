@@ -31,14 +31,14 @@ class User implements UserInterface, \Serializable
     private $password;
 
     /**
-     * @ORM\OneToOne(targetEntity="IssueInvoices\Domain\Model\Administration\Administration", cascade={"persist", "remove"}, orphanRemoval=true)
-     * @ORM\JoinColumn(name="administration_id", referencedColumnName="id")
+     * @ORM\OneToOne(targetEntity="IssueInvoices\Domain\Model\Administration\Administration", mappedBy="user", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     private $administration;
 
-    public function __construct()
+    public function setAdministration($administration)
     {
-        $this->administration = new Administration();
+        $administration->setUser($this);
+        $this->administration = $administration;
     }
 
     public function getUsername()

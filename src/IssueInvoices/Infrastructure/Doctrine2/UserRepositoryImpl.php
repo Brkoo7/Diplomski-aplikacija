@@ -7,5 +7,6 @@ use Doctrine\ORM\EntityRepository;
 
 class UserRepositoryImpl extends EntityRepository implements UserRepository
 {
+	
 }
 

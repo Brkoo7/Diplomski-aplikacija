@@ -16,10 +16,8 @@ class ArticleController extends Controller
     public function articlesAction(Request $request)
     {
         $userAdministration = $this->getUser()->getAdministration();
-        $userAdministrationId = $userAdministration->getId();
 
-        $articles = $this->get('app.article_repository')
-                ->findAllForUserAdministration($userAdministrationId);
+        $articles = $userAdministration->getArticles();
 
         return $this->render('AppBundle:Administration:articles.html.twig', [
             'articles' => $articles
@@ -45,7 +43,6 @@ class ArticleController extends Controller
             $article->setName($formArticle->name);
             $article->setTotalPrice($formArticle->totalPrice);
             $article->setTaxRate($formArticle->taxRate);
-            $article->setAdministration($userAdministration);
 
             $userAdministration->addArticle($article);
 
@@ -68,7 +65,8 @@ class ArticleController extends Controller
     {
         $formArticle = new FormArticle();
 
-        $article = $this->get('app.article_repository')->findOneById($articleId);
+        $userAdministration = $this->getUser()->getAdministration();
+        $article = $userAdministration->getArticleById($articleId);
 
         $formArticle->name = $article->getName();
         $formArticle->totalPrice = $article->getTotalPrice();
@@ -100,9 +98,10 @@ class ArticleController extends Controller
     public function deleteArticleAction(int $articleId)
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $article = $this->get('app.article_repository')->findOneById($articleId);
 
-        $entityManager->remove($article);
+        $userAdministration = $this->getUser()->getAdministration();
+        $userAdministration->removeArticleById($articleId);
+
         $entityManager->flush();
 
         return $this->redirectToRoute('AppBundle_Administration_articles');

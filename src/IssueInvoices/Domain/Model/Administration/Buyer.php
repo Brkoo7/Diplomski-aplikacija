@@ -54,7 +54,7 @@ class Buyer
 
     /**
      * @ORM\ManyToOne(targetEntity="Administration", inversedBy="buyers")
-     * @ORM\JoinColumn(name="administration_id", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumn(name="administration_id", referencedColumnName="id")
      */
     private $administration;
 

@@ -10,40 +10,64 @@
         </li>
     </ol>
     <div class="row administration-title">
-        <a href="{{path('AppBundle_Administration_addSeller')}}"><button type="button" id="addOneItem" class="btn btn-lg btn-info col-md-2 col-md-offset-5">
+        <div class="form-group col-md-4">
+            <input type="text" placeholder="Pretraživanje po nazivu" class="form-control" id="usr">
+        </div>
+        {% if seller is null %}
+            <a href="{{path('AppBundle_Administration_addSeller')}}"><button type="button" id="addOneItem" class="btn btn-lg btn-info col-md-2 col-md-offset-5">
             Unesi novog
-        </button></a>
+            </button></a>
+        {% else %}
+            <a href="{{ path('AppBundle_Administration_editSeller', {'sellerId': seller.id})}}"><button type="button" id="addOneItem" class="btn btn-lg btn-info col-md-2 col-md-offset-5">
+            Uredi
+            </button></a>
+        {% endif %}
+        
     </div>
 
     <div class="row">
         <ul class="list-group col-md-12">
             <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Naziv tvrtke</th>
-                        <th>Vlasnik</th>
-                        <th>OIB</th>
-                        <th>PDV ID</th>
-                        <th>Broj telefona</th>
-                        <th>E-mail</th>
-                        <th>Adresa</th>
-                        <th>U sustavu PDV-a</th>
-                        <th>E-mail</th>
-                    </tr>
-                </thead>
                 <tbody>
                     {% if not seller is null %}
                     <tr>
+                        <th>Naziv tvrtke</th>
                         <td>{{seller.companyName}}</td>
+                    </tr>
+                    <tr>
+                        <th>Vlasnik</th>
                         <td>{{seller.personName}}</td>
+                    </tr>
+                    <tr>
+                        <th>OIB</th>
                         <td>{{seller.oib}}</td>
+                    </tr>
+                    <tr>
+                        <th>PDV ID</th>
                         <td>{{seller.pdvID}}</td>
+                    </tr>
+                    <tr>
+                        <th>Broj telefona</th>
                         <td>{{seller.phoneNumber}}</td>
+                    </tr>
+                    <tr>
+                        <th>E-mail</th>
                         <td>{{seller.email}}</td>
+                    </tr>
+                    <tr>
+                        <th>Ulica</th>
                         <td>{{seller.street}}</td>
+                    </tr>
+                    <tr>
+                        <th>Poštanski broj</th>
                         <td>{{seller.postalCode}}</td>
+                    </tr>
+                    <tr>
+                        <th>Grad</th>
                         <td>{{seller.city}}</td>
-                        <td>{{seller.countryCode}}</td>
+                    </tr>
+                    <tr>
+                        <th>U sustavu PDV-a</th>
                         <td>{{seller.inVATSystem}}</td>
                     </tr>
                     {% endif %}

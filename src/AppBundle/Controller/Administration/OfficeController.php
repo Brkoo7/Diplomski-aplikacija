@@ -16,9 +16,7 @@ class OfficeController extends Controller
     public function officesAction(Request $request)
     {
         $userAdministration = $this->getUser()->getAdministration();
-        $userAdministrationId = $userAdministration->getId();
-        // Dohvatiti sve kupce iz repozitorija i prikazati
-        $offices = $this->get('app.office_repository')->findAllForUserAdministration($userAdministrationId);
+        $offices = $userAdministration->getOffices();
 
         return $this->render('AppBundle:Administration:offices.html.twig', [
             'offices' => $offices
@@ -66,7 +64,8 @@ class OfficeController extends Controller
         $formOffice = new FormOffice();
 
         // Nađi poslovni prostor za poslani slug u ruti
-        $office = $this->get('app.office_repository')->find($officeId);
+        $userAdministration = $this->getUser()->getAdministration();
+        $office = $userAdministration->getOfficeById($officeId);
 
         $formOffice->label = $office->getLabel();
         $formOffice->address = $office->getAddress();
@@ -81,7 +80,6 @@ class OfficeController extends Controller
             $office->setLabel($formOffice->label);
             $office->setAddress($formOffice->address);
 
-            $entityManager->persist($office);
             $entityManager->flush();
 
             return $this->redirectToRoute('AppBundle_Administration_offices'); 
@@ -98,9 +96,10 @@ class OfficeController extends Controller
     public function deleteOfficeAction(int $officeId)
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $office = $this->get('app.office_repository')->findOneById($officeId);
+        
+        $userAdministration = $this->getUser()->getAdministration();
+        $userAdministration->removeOfficeById($officeId);
 
-        $entityManager->remove($office);
         $entityManager->flush();
 
         return $this->redirectToRoute('AppBundle_Administration_offices');

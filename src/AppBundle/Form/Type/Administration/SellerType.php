@@ -5,6 +5,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use AppBundle\Form\Model\Administration\Seller;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -20,16 +21,16 @@ class SellerType extends AbstractType
             ->add('personName', TextType::class, [
                 'label' => 'Ime i prezime osobe'
             ])
-            ->add('oib', TextType::class, [
+            ->add('oib', NumberType::class, [
                 'label' => 'OIB'
             ])
-            ->add('pdvID', TextType::class, [
+            ->add('pdvID', NumberType::class, [
                 'label' => 'PDV ID broj'
             ])
             ->add('phoneNumber', TextType::class, [
                 'label' => 'kontakt broj'
             ])
-            ->add('email', TextType::class, [
+            ->add('email', EmailType::class, [
                 'label' => 'E-mail'
             ])
             ->add('street', TextType::class, [
@@ -44,7 +45,7 @@ class SellerType extends AbstractType
             ->add('countryCode', TextType::class, [
                 'label' => 'Država'
             ])
-            ->add('isInVATSystem', ChoiceType::class, [
+            ->add('inVATSystem', ChoiceType::class, [
                 'choices' => [
                     'Yes' => "1",
                     'No' => "0"

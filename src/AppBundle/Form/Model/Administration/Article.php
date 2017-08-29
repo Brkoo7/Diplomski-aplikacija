@@ -19,11 +19,13 @@ class Article
 
     /**
      * @Assert\NotBlank
+     * @Assert\Type(type="float")
      */
     public $totalPrice;
 
     /**
      * @Assert\NotBlank
+     * @Assert\Type(type="float")
      */
     public $taxRate;
 }
