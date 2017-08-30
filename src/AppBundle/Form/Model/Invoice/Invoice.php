@@ -1,30 +1,10 @@
-**
-     * Prodavatelj.
-     *
-     * @var Seller
-     * @ORM\OneToOne(targetEntity="Seller", cascade={"persist", "remove"}, orphanRemoval=true)
-     */
-    protected $seller;
+<?php
+namespace AppBundle\Form\Model\Invoice;
 
-    /**
-     * Kupac.
-     *
-     * @var Buyer
-     * @ORM\OneToOne(targetEntity="Buyer", cascade={"persist", "remove"}, orphanRemoval=true)
-     */
-    protected $buyer;
+use Symfony\Component\Validator\Constraints as Assert;
+use AppBundle\Validator\Constraints as AcmeAssert;
 
-    /**
-     * Vrsta računa.
-     *
-     * @var InvoiceType
-     * @ORM\Column(name="invoice_type", type="string", nullable=true)
-     */
-    protected $invoiceType;
-
-    /**
-     * Napomene.
-     *
-     * @ORM\Column(type="text", length=65535, nullable=true)
-     */
-    protected $notes;
+class Invoice
+{
+    
+}

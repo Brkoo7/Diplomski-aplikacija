@@ -3,7 +3,6 @@
 namespace IssueInvoices\Domain\Model\Administration;
 
 use Doctrine\ORM\Mapping as ORM;
-use IssueInvoices\Domain\Model\Invoice\BaseInvoice as Invoice;
 use Doctrine\Common\Collections\ArrayCollection;
 use IssueInvoices\Domain\Model\User\User;
 use DateTime;
@@ -61,19 +60,12 @@ class Administration
      */
     private $user;
 
-    /**
-     * @var BaseInvoice[]
-     * @ORM\OneToMany(targetEntity="IssueInvoices\Domain\Model\Invoice\BaseInvoice", mappedBy="administration")
-     */
-    private $invoices;
-
     public function __construct()
     {
         $this->articles = new ArrayCollection();
         $this->offices = new ArrayCollection();
         $this->buyers = new ArrayCollection();
         $this->operators = new ArrayCollection();
-        $this->invoices = new ArrayCollection();
     }
 
     public function setUser(User $user)

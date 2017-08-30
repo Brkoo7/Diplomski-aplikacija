@@ -1,12 +1,10 @@
 <?php
-
 namespace IssueInvoices\Domain\Model\Invoice;
 
 use Doctrine\ORM\Mapping as ORM;
-use User\Domain\Model\User;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
-use IssueInvoices\Domain\Model\Administration\Administration;
+use IssueInvoices\Domain\Model\User\User;
 
 /**
  * @ORM\Entity
@@ -53,15 +51,10 @@ abstract class BaseInvoice
     protected $buyer;
 
     /**
-     * @ORM\OneToMany(targetEntity="ArticleCalculation", mappedBy="invoiceCalculation")
+     * @var ArticleCalculation
+     * @ORM\OneToMany(targetEntity="ArticleCalculation", mappedBy="invoice", cascade={"persist", "remove"}, orphanRemoval=true)
      */
-    private $articleCalculations;
-
-    /**
-     * @var InvoiceCalculation
-     * @ORM\OneToOne(targetEntity="InvoiceCalculation", cascade={"persist", "remove"}, orphanRemoval=true)
-     */
-    protected $invoiceCalculation;
+    protected $articleCalculations;
 
     /**
      * Vrsta računa.
@@ -77,7 +70,7 @@ abstract class BaseInvoice
      * @var string
      * @ORM\Column(name="issue_place", type="string")
      */
-    protected $issuePlace = '';
+    protected $issuePlace;
 
     /**
      * Napomene.
@@ -86,9 +79,32 @@ abstract class BaseInvoice
      */
     protected $notes;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="IssueInvoices\Domain\Model\Administration\Administration", inversedBy="invoices")
-     * @ORM\JoinColumn(name="administration_id", referencedColumnName="id")
+    /* 
+     * @var float
+     * @ORM\Column(name="base_amount", type="float")
      */
-    private $administration;
+    protected $baseAmount;
+
+    /* 
+     * @var float
+     * @ORM\Column(name="tax_amount", type="float")
+     */
+    protected $taxAmount;
+
+    /* 
+     * @var float
+     * @ORM\Column(name="total_amount", type="float")
+     */
+    protected $totalAmount;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="IssueInvoices\Domain\Model\User\User", inversedBy="invoices")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     */
+    protected $user;
+    
+    public function __construct()
+    {
+        $this->articleCalculations = new ArrayCollection();
+    }
 }

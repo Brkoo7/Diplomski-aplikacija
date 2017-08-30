@@ -19,13 +19,13 @@ class Seller
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
      */
-    protected $id;
+    private $id;
 
     /**
      * @var string
-     * @ORM\Column(name="company_name", type="string", length=20)
+     * @ORM\Column(name="company_name", type="string", length=50)
      */
-    protected $companyName = '';
+    private $companyName;
 
     /**
      * Ime i prezime
@@ -33,7 +33,7 @@ class Seller
      * @var string
      * @ORM\Column(type="string", length=30)
      */
-    protected $personName = '';
+    private $personName;
 
     /**
      * OIB.
@@ -41,31 +41,31 @@ class Seller
      * @var string
      * @ORM\Column(type="string", length=15)
      */
-    protected $oib = '';
+    private $oib;
 
     /**
      * PDV broj
      *
      * @var string
-     * @ORM\Column(name="pdv_id", type="string", length=15)
+     * @ORM\Column(name="pdv_id", type="string", length=15, nullable=true)
      */
-    protected $pdvID = '';
+    private $pdvID;
 
     /**
      * Broj telefona
      *
      * @var string
-     * @ORM\Column(name="phone_number", type="string", length=15)
+     * @ORM\Column(name="phone_number", type="string", length=20, nullable=true)
      */
-    protected $phoneNumber = '';
+    private $phoneNumber;
 
     /**
      * E-mail adresa
      *
      * @var string
-     * @ORM\Column(name="email", type="string", length=30)
+     * @ORM\Column(name="email", type="string", length=50, nullable=true)
      */
-    protected $email = '';
+    private $email;
 
     /**
      * Ulica.
@@ -73,7 +73,7 @@ class Seller
      * @var string
      * @ORM\Column(type="string", length=30)
      */
-    protected $street = '';
+    private $street;
 
     /**
      * Poštanski broj.
@@ -81,36 +81,71 @@ class Seller
      * @var int
      * @ORM\Column(name="postal_code", type="integer")
      */
-    protected $postalCode;
+    private $postalCode;
 
     /**
-     * Grad.
+     * Mjesto.
      *
      * @var string
      * @ORM\Column(type="string", length=20)
      */
-    protected $city = '';
+    private $city;
 
     /**
      * Država.
      *
      * @var string
-     * @ORM\Column(name="country_code", type="string", length=20)
+     * @ORM\Column(type="string", length=20)
      */
-    protected $countryCode = '';
+    private $country;
 
-    /**
-     * Da li je prodavatelj u sustavu PDV-a
-     *
-     * @var bool
-     *
-     * @ORM\Column(name="in_vat_system", type="boolean")
-     */
-    private $inVATSystem = true;
-
-
-    public function __construct()
+    public function setCompanyName(string $companyName)
     {
-        $this->offices = new ArrayCollection();
+        $this->companyName = $companyName;
+    }
+
+    public function setPersonName(string $personName)
+    {
+        $this->personName = $personName;
+    }
+
+    public function setOib(string $oib)
+    {
+        $this->oib = $oib;
+    }
+
+    public function setPdvID($pdvID)
+    {
+        $this->pdvID = $pdvID;
+    }
+
+    public function setPhoneNumber($phoneNumber)
+    {
+        $this->phoneNumber = $phoneNumber;
+    }
+
+    public function setEmail($email)
+    {
+        $this->email = $email;
+    }
+
+    public function setStreet($street)
+    {
+        $this->street = $street;
+    }
+
+    public function setPostalCode(int $postalCode)
+    {
+        $this->postalCode = $postalCode;
+    }
+
+    public function setCountry(string $country)
+    {
+        $this->country = $country;
+    }
+
+    public function setCity(string $city)
+    {
+        $this->city = $city;
     }
 }

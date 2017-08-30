@@ -21,11 +21,6 @@ class ArticleCalculation
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="BaseInvoice", inversedBy="articleCalculations")
-     */
-    private $invoiceCalculation;
-
-    /**
      * Naziv artikla
      *
      * @ORM\Column(type="string")
@@ -33,20 +28,12 @@ class ArticleCalculation
     private $name;
 
     /**
-     * Ukupni iznos.
+     * Jedinična cijena.
      *
      * @var float
-     * @ORM\Column(name="total", type="float")
+     * @ORM\Column(name="unit_price", type="float")
      */
-    private $total;
-
-    /**
-     * Porezna osnovica.
-     *
-     * @var float
-     * @ORM\Column(name="tax_basis", type="float")
-     */
-    private $taxBasic;
+    private $unitPrice;
 
     /**
      * Stopa PDV-a.
@@ -55,6 +42,14 @@ class ArticleCalculation
      * @ORM\Column(name="tax_rate", type="float")
      */
     private $taxRate;
+
+    /**
+     * Ukupni iznos.
+     *
+     * @var float
+     * @ORM\Column(type="float")
+     */
+    private $total;
 
     /**
      * Količina artikla
@@ -66,7 +61,48 @@ class ArticleCalculation
     /**
      * Iznos popusta
      *
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="float")
      */
     private $discount;
+
+    /**
+     * @var BaseInvoice
+     * @ORM\ManyToOne(targetEntity="BaseInvoice", inversedBy="articleCalculations")
+     */
+    private $invoice;
+
+    public function setInvoice(BaseInvoice $invoice)
+    {
+        $this->invoice = $invoice;
+    }
+
+    public function setName(string $name)
+    {
+        $this->name = $name;
+    }
+
+    public function setUnitPrice(string $unitPrice)
+    {
+        $this->unitPrice = $unitPrice;
+    }
+
+    public function setTaxRate(float $taxRate)
+    {
+        $this->taxRate = $taxRate;
+    }
+
+    public function setTotal(float $total)
+    {
+        $this->total = $total;
+    }
+
+    public function setQuantity(int $quantity)
+    {
+        $this->quantity = $quantity;
+    }
+
+    public function setDiscount(float $discount)
+    {
+        $this->discount = $discount;
+    }
 }

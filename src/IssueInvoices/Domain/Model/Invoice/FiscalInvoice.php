@@ -8,9 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
    + pravna i fizička osoba koja se smatra obveznikom poreza na dobit prema Zakonu o porezu na dobit za sve djelatnosti za koje je, prema odredbama posebnih propisa, obveznik izdavanja računa za isporuku dobra ili obavljene usluge.
    + Prema tome, novost je da su obveznici fiskalizacije (izdavanja fiskaliziranih računa) i samostalne djelatnosti, obveznici poreza na dohodak, kojima se ostvareni dohodak paušalno oporezuje.
    - iznajmljivači soba i postelja putnicima i turistima te organizatori kampova kojima se tako ostvareni dohodak paušalno oporezuje, nisu obveznici fiskalizacije jer ne obavljaju samostalnu djelatnost u smislu odredbi Zakona o porezu na dohodak  već ostvaruju dohodak od imovine.
- */
-
-/**
+ *
  * @ORM\Entity
  */
 class FiscalInvoice extends BaseInvoice

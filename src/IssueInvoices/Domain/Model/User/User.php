@@ -4,6 +4,8 @@ namespace IssueInvoices\Domain\Model\User;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use IssueInvoices\Domain\Model\Administration\Administration;
+use Doctrine\Common\Collections\ArrayCollection;
+use IssueInvoices\Domain\Model\Invoice\BaseInvoice;
 
 /**
  * @ORM\Table(name="user")
@@ -35,10 +37,36 @@ class User implements UserInterface, \Serializable
      */
     private $administration;
 
+    /**
+     * @ORM\OneToMany(targetEntity="IssueInvoices\Domain\Model\Invoice\BaseInvoice", mappedBy="user", cascade={"persist", "remove"}, orphanRemoval=true)
+     */
+    private $invoices;
+
+    public function __construct()
+    {
+        $this->invoices = new ArrayCollection();
+    }
+
     public function setAdministration(Administration $administration)
     {
         $administration->setUser($this);
         $this->administration = $administration;
+    }
+
+    public function getAdministration()
+    {
+        return $this->administration;
+    }
+
+    public function addInvoice(BaseInvoice $invoice)
+    {
+        $invoice->setUser($this);
+        $this->invoices->add($invoice);
+    }
+
+    public function getInvoices()
+    {
+        return $this->invoices;
     }
 
     public function getUsername()
@@ -124,10 +152,5 @@ class User implements UserInterface, \Serializable
     public function getEmail()
     {
         return $this->email;
-    }
-
-    public function getAdministration()
-    {
-        return $this->administration;
     }
 }
