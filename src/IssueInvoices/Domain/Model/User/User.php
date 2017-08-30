@@ -35,7 +35,7 @@ class User implements UserInterface, \Serializable
      */
     private $administration;
 
-    public function setAdministration($administration)
+    public function setAdministration(Administration $administration)
     {
         $administration->setUser($this);
         $this->administration = $administration;

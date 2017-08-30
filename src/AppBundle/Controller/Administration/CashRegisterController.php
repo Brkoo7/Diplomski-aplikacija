@@ -16,8 +16,8 @@ class CashRegisterController extends Controller
     public function cashRegistersAction(Request $request)
     {
         $userAdministration = $this->getUser()->getAdministration();
-        $cashRegisters = $userAdministration->getCashRegisters();
-
+        $cashRegisters = $userAdministration->getAllCashRegisters();
+        
         return $this->render('AppBundle:Administration:cashRegisters.html.twig', [
             'cashRegisters' => $cashRegisters
         ]);
@@ -30,7 +30,8 @@ class CashRegisterController extends Controller
     {
         $formCashRegister = new FormCashRegister();
         // Dohvatiti administraciju prijavljenog korisnika
-        $offices = $this->getUser()->getAdministration()->getOffices();
+        $userAdministration = $this->getUser()->getAdministration();
+        $offices = $userAdministration->getOffices();
 
         $form = $this->createForm(
             CashRegisterType::class, 
@@ -44,14 +45,13 @@ class CashRegisterController extends Controller
             $formCashRegister = $form->getData();
             $entityManager = $this->getDoctrine()->getManager();
 
-            $cashRegister = new CashRegister();
-            $cashRegister->setLabel($formCashRegister->label);
-            
-            // Pronaci office za $formCashRegister->office
-            $office = $userAdministration->getOfficeById($office->getId());
-            $userAdministration->addCashRegisterForOffice($cashRegister, $office);
+            $cashRegister = new CashRegister(
+                $formCashRegister->label
+            );
+            $office = $formCashRegister->office;
+            $cashRegister->setOffice($office);
 
-            $entityManager->persist($userAdministration);
+            $entityManager->persist($cashRegister);
             $entityManager->flush();
 
             return $this->redirectToRoute('AppBundle_Administration_cashRegisters');
@@ -69,49 +69,46 @@ class CashRegisterController extends Controller
     {
         $formCashRegister = new FormCashRegister();
 
-        // Nađi poslovni prostor za poslani slug u ruti
-        $office = $this->get('app.office_repository')->find($officeId);
+        // Nađi naplatni uređaj za poslani slug
+        $cashRegister = $this->get('app.cashRegister_repository')->find($cashRegisterId);
 
-        $formOffice->label = $office->getLabel();
-        $formOffice->address = $office->getAddress();
+        $formCashRegister->label = $cashRegister->getLabel();
 
-        $form = $this->createForm(OfficeType::class, $formOffice);
+        $form = $this->createForm(
+            CashRegisterType::class,
+            $formCashRegister,
+            ['offices_choice_disabled' => true]
+        );
         $form->handleRequest($request);
 
-        // Dohvatiti prijavljenog korisnika i njegovu administraciju
-        $user = $this->container->get('security.token_storage')->getToken()->getUser();
-        $administration = $user->getAdministration();
-
         if ($form->isSubmitted() && $form->isValid()) {
-            $formOffice = $form->getData();
+            $formCashRegister = $form->getData();
             $entityManager = $this->getDoctrine()->getManager();
             
-            $office->setLabel($formOffice->label);
-            $office->setAddress($formOffice->address);
+            $cashRegister->setLabel($formCashRegister->label);
 
-            $office->setAdministration($administration);
-            $entityManager->persist($office);
+            $entityManager->persist($cashRegister);
             $entityManager->flush();
 
-            return $this->redirectToRoute('AppBundle_Administration_offices'); 
+            return $this->redirectToRoute('AppBundle_Administration_cashRegisters'); 
         }
 
-        return $this->render('AppBundle:Administration:addOffice.html.twig', [
+        return $this->render('AppBundle:Administration:addCashRegister.html.twig', [
             'form' => $form->createView(),
         ]);
     }
 
     /**
-     * @Route("/administration/office/delete/{officeId}", name="AppBundle_Administration_deleteOffice")
+     * @Route("/administration/cashRegister/delete/{cashRegisterId}", name="AppBundle_Administration_deleteCashRegister")
      */
-    public function deleteOfficeAction(int $officeId)
+    public function deleteCashRegisterAction(int $cashRegisterId)
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $office = $this->get('app.office_repository')->findOneById($officeId);
+        $cashRegister = $this->get('app.cashRegister_repository')->find($cashRegisterId);
 
-        $entityManager->remove($office);
+        $entityManager->remove($cashRegister);
         $entityManager->flush();
 
-        return $this->redirectToRoute('AppBundle_Administration_offices');
+        return $this->redirectToRoute('AppBundle_Administration_cashRegisters');
     }
 }

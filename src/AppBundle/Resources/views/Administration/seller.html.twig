@@ -67,8 +67,12 @@
                         <td>{{seller.city}}</td>
                     </tr>
                     <tr>
+                        <th>Država</th>
+                        <td>{{seller.country}}</td>
+                    </tr>
+                    <tr>
                         <th>U sustavu PDV-a</th>
-                        <td>{{seller.inVATSystem}}</td>
+                        <td>{{seller.inVATSystem ? 'DA' : 'NE'}}</td>
                     </tr>
                     {% endif %}
                 </tbody>

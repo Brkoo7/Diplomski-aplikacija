@@ -24,9 +24,9 @@
                 <thead>
                     <tr>
                         <th>Redni broj</th>
+                        <th>Ime i prezime</th>
                         <th>Oib</th>
-                        <th>Label</th>
-                        <th>Name</th>
+                        <th>Oznaka</th>
                         <th>Opcije</th>
                     </tr>
                 </thead>
@@ -34,9 +34,9 @@
                     {% for operator in operators %}
                         <tr>
                             <td>{{loop.index}}</td>
+                            <td>{{operator.name}}</td>
                             <td>{{operator.oib}}</td>
                             <td>{{operator.label}}</td>
-                            <td>{{operator.name}}</td>
                             <td>
                                 <a href="{{ path('AppBundle_Administration_editOperator', {'operatorId': operator.id})}}"> <button type="button" class="btn btn-xs btn-primary">Uredi</button></a>
                                 <a href="{{ path('AppBundle_Administration_deleteOperator', {'operatorId': operator.id})}}"> <button type="button" class="btn btn-xs btn-danger">Izbriši</button></a>

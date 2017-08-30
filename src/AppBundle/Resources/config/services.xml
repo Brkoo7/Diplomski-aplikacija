@@ -20,6 +20,12 @@
             <argument>IssueInvoices\Domain\Model\Administration\Administration</argument>
         </service>
 
+        <service id="app.cashRegister_repository"
+            class="IssueInvoices\Infrastructure\Doctrine2\CashRegisterRepositoryImpl">
+            <factory service="doctrine.orm.entity_manager" method="getRepository"/>
+            <argument>IssueInvoices\Domain\Model\Administration\CashRegister</argument>
+        </service>
+
         <!--
             Doctrine Repozitorije možemo definirati kao servise koristeći mogućnost da servis stvorimo preko tzv. factory
             metode.

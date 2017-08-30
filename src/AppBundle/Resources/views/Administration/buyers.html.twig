@@ -36,9 +36,9 @@
                         <tr>
                             <td>{{loop.index}}</td>
                             <td>{{buyer.name}}</td>
+                            <td>{{buyer.address}}</td>
                             <td>{{buyer.oib}}</td>
                             <td>{{buyer.pdvID}}</td>
-                            <td>{{buyer.address}}</td>
                             <td>
                                 <a href="{{ path('AppBundle_Administration_editBuyer', {'buyerId': buyer.id})}}"> <button type="button" class="btn btn-xs btn-primary">Uredi</button></a>
                                 <a href="{{ path('AppBundle_Administration_deleteBuyer', {'buyerId': buyer.id})}}"> <button type="button" class="btn btn-xs btn-danger">Izbriši</button></a>

@@ -40,7 +40,7 @@ class SellerController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $formSeller = $form->getData();
             $entityManager = $this->getDoctrine()->getManager();
-
+            dump($formSeller);
             $seller = (new SellerFactory())->fromData($formSeller);
 
             $userAdministration->setSeller($seller);
@@ -50,7 +50,7 @@ class SellerController extends Controller
             return $this->redirectToRoute('AppBundle_Administration_seller');
         }
 
-        return $this->render('AppBundle:Administration:addBuyer.html.twig', [
+        return $this->render('AppBundle:Administration:addSeller.html.twig', [
             'form' => $form->createView()
         ]);
     }
@@ -74,7 +74,7 @@ class SellerController extends Controller
         $formSeller->street = $seller->getStreet();
         $formSeller->postalCode = $seller->getPostalCode();
         $formSeller->city = $seller->getCity();
-        $formSeller->countryCode = $seller->getCountryCode();
+        $formSeller->country = $seller->getCountry();
         $formSeller->inVATSystem = $seller->getInVatSystem();
 
         $form = $this->createForm(SellerType::class, $formSeller);

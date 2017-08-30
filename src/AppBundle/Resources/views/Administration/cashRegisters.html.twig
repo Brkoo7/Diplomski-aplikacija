@@ -33,8 +33,12 @@
                     {% for cashRegister in cashRegisters %}
                         <tr>
                             <td>{{loop.index}}</td>
-                           
-                            
+                            <td>{{cashRegister.label}}</td>
+                            <td>{{cashRegister.office.label}}</td>
+                            <td>
+                                <a href="{{ path('AppBundle_Administration_editCashRegister', {'cashRegisterId': cashRegister.id})}}"> <button type="button" class="btn btn-xs btn-primary">Uredi</button></a>
+                                <a href="{{ path('AppBundle_Administration_deleteCashRegister', {'cashRegisterId': cashRegister.id})}}"> <button type="button" class="btn btn-xs btn-danger">Izbriši</button></a>
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>

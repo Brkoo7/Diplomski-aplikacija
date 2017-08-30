@@ -8,6 +8,13 @@ class Office
 {
 	/**
      * @Assert\NotBlank
+     * @Assert\Type(type="string")
+     * @Assert\Length(
+     *      min = 1,
+     *      max = 5,
+     *      minMessage = "Oznaka mora imati barem {{ limit }} znak",
+     *      maxMessage = "Oznaka ne može imati više od {{ limit }} znakova"
+     * )
      */
     public $label;
 
@@ -15,4 +22,10 @@ class Office
      * @Assert\NotBlank
      */
     public $address;
+
+    /**
+     * @Assert\NotBlank
+     * @Assert\Type(type="string")
+     */
+    public $city;
 }

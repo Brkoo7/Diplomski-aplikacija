@@ -17,7 +17,7 @@ class BuyerController extends Controller
     {
         $userAdministration = $this->getUser()->getAdministration();
 
-        // Dohvatiti sve kupce iz repozitorija i prikazati
+        // Dohvatiti sve kupce iz administracije korisnika
         $buyers = $userAdministration->getBuyers();
 
         return $this->render('AppBundle:Administration:buyers.html.twig', [
@@ -40,12 +40,12 @@ class BuyerController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $formBuyer = $form->getData();
             $entityManager = $this->getDoctrine()->getManager();
-            $buyer = new Buyer();
-            $buyer->setName($formBuyer->name);
+            $buyer = new Buyer(
+                $formBuyer->name,
+                $formBuyer->address
+            );
             $buyer->setOib($formBuyer->oib);
-            $buyer->setPDVId($formBuyer->pdvID);
-            $buyer->setAddress($formBuyer->address);
-
+            $buyer->setPdvID($formBuyer->pdvID);
             $userAdministration->addBuyer($buyer);
 
             $entityManager->persist($userAdministration);
@@ -71,9 +71,9 @@ class BuyerController extends Controller
         $buyer = $userAdministration->getBuyerById($buyerId);
 
         $formBuyer->name = $buyer->getName();
+        $formBuyer->address = $buyer->getAddress();
         $formBuyer->oib = $buyer->getOib();
         $formBuyer->pdvID = $buyer->getPdvID();
-        $formBuyer->address = $buyer->getAddress();
 
         $form = $this->createForm(BuyerType::class, $formBuyer);
         $form->handleRequest($request);
@@ -83,9 +83,9 @@ class BuyerController extends Controller
             $entityManager = $this->getDoctrine()->getManager();
             
             $buyer->setName($formBuyer->name);
-            $buyer->setOib($formBuyer->oib);
-            $buyer->setPDVId($formBuyer->pdvID);
             $buyer->setAddress($formBuyer->address);
+            $buyer->setOib($formBuyer->oib);
+            $buyer->setPdvId($formBuyer->pdvID);
 
             $entityManager->flush();
             return $this->redirectToRoute('AppBundle_Administration_buyers'); 

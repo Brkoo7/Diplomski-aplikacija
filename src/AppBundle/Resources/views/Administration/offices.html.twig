@@ -26,6 +26,7 @@
                         <th>Redni broj</th>
                         <th>Oznaka</th>
                         <th>Adresa</th>
+                        <th>Mjesto</th>
                         <th>Opcije</th>
                     </tr>
                 </thead>
@@ -35,6 +36,7 @@
                             <td>{{loop.index}}</td>
                             <td>{{office.label}}</td>
                             <td>{{office.address}}</td>
+                            <td>{{office.city}}</td>
                             <td>
                                 <a href="{{ path('AppBundle_Administration_editOffice', {'officeId': office.id})}}"> <button type="button" class="btn btn-xs btn-primary">Uredi</button></a>
                                 <a href="{{ path('AppBundle_Administration_deleteOffice', {'officeId': office.id})}}"> <button type="button" class="btn btn-xs btn-danger">Izbriši</button></a>

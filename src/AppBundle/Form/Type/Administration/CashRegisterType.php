@@ -26,7 +26,8 @@ class CashRegisterType extends AbstractType
                 },
                 'expanded' => false,
                 'multiple' => false,
-                'label' => 'Poslovni prostor'
+                'label' => 'Poslovni prostor',
+                'disabled' => $options['offices_choice_disabled']
             ])
         ;
     }
@@ -36,17 +37,8 @@ class CashRegisterType extends AbstractType
         $resolver->setDefaults(array(
             'method' => 'post',
             'data_class' => CashRegister::class,
-            'offices' => null
+            'offices' => null,
+            'offices_choice_disabled' => false
         ));
-    }
-
-    private function findOfficeChoices($offices)
-    {
-        $officeChoices = [];
-        foreach ($offices as $office) {
-            $officeChoices[$office->getLabel()] = $office->getLabel();
-        }
-        dump($officeChoices);
-        return $officeChoices;
     }
 }

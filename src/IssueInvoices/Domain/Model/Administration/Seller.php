@@ -23,9 +23,9 @@ class Seller
 
     /**
      * @var string
-     * @ORM\Column(name="company_name", type="string", length=20)
+     * @ORM\Column(name="company_name", type="string", length=50)
      */
-    private $companyName = '';
+    private $companyName;
 
     /**
      * Ime i prezime
@@ -33,7 +33,7 @@ class Seller
      * @var string
      * @ORM\Column(type="string", length=30)
      */
-    private $personName = '';
+    private $personName;
 
     /**
      * OIB.
@@ -41,31 +41,31 @@ class Seller
      * @var string
      * @ORM\Column(type="string", length=15)
      */
-    private $oib = '';
+    private $oib;
 
     /**
      * PDV broj
      *
      * @var string
-     * @ORM\Column(name="pdv_id", type="string", length=15)
+     * @ORM\Column(name="pdv_id", type="string", length=15, nullable=true)
      */
-    private $pdvID = '';
+    private $pdvID;
 
     /**
      * Broj telefona
      *
      * @var string
-     * @ORM\Column(name="phone_number", type="string", length=15)
+     * @ORM\Column(name="phone_number", type="string", length=20, nullable=true)
      */
-    private $phoneNumber = '';
+    private $phoneNumber;
 
     /**
      * E-mail adresa
      *
      * @var string
-     * @ORM\Column(name="email", type="string", length=30)
+     * @ORM\Column(name="email", type="string", length=50, nullable=true)
      */
-    private $email = '';
+    private $email;
 
     /**
      * Ulica.
@@ -73,7 +73,7 @@ class Seller
      * @var string
      * @ORM\Column(type="string", length=30)
      */
-    private $street = '';
+    private $street;
 
     /**
      * Poštanski broj.
@@ -84,20 +84,20 @@ class Seller
     private $postalCode;
 
     /**
-     * Grad.
+     * Mjesto.
      *
      * @var string
      * @ORM\Column(type="string", length=20)
      */
-    private $city = '';
+    private $city;
 
     /**
      * Država.
      *
      * @var string
-     * @ORM\Column(name="country_code", type="string", length=20)
+     * @ORM\Column(type="string", length=20)
      */
-    private $countryCode = '';
+    private $country;
 
     /**
      * Da li je prodavatelj u sustavu PDV-a
@@ -106,7 +106,7 @@ class Seller
      *
      * @ORM\Column(name="in_vat_system", type="boolean")
      */
-    private $inVATSystem = true;
+    private $inVATSystem;
 
     /**
      * @ORM\OneToOne(targetEntity="Administration", inversedBy="seller")
@@ -134,101 +134,117 @@ class Seller
         $this->oib = $oib;
     }
 
-    public function setPdvID(string $pdvID)
+    
+    public function setPdvID($pdvID)
     {
         $this->pdvID = $pdvID;
     }
 
-    public function setPhoneNumber(string $phoneNumber)
+    public function setPhoneNumber($phoneNumber)
     {
         $this->phoneNumber = $phoneNumber;
     }
 
-    public function setEmail(string $email)
+    public function setEmail($email)
     {
         $this->email = $email;
     }
-    public function setStreet(string $street)
+
+    public function setStreet($street)
     {
         $this->street = $street;
     }
 
-    public function setPostalCode(string $postalCode)
+    public function setPostalCode(int $postalCode)
     {
         $this->postalCode = $postalCode;
     }
 
-    public function setCountryCode(string $countryCode)
+    public function setCountry(string $country)
     {
-        $this->countryCode = $countryCode;
+        $this->country = $country;
     }
 
-    public function setInVatSystem(bool $inVatSystem)
+    public function setCity(string $city)
     {
-        $this->inVatSystem = $inVatSystem;
+        $this->city = $city;
     }
 
-    public function setAdministration($administration)
+    public function setInVatSystem(bool $inVATSystem)
+    {
+        $this->inVATSystem = $inVATSystem;
+    }
+
+    public function setAdministration(Administration $administration)
     {
         $this->administration = $administration;
     }
 
-    public function getCompanyName()
+    public function getCompanyName(): string
     {
         return $this->companyName;
     }
 
-    public function getInVatSystem()
+    public function getInVatSystem(): bool
     {
         return $this->inVATSystem;
     }
 
-    public function getPersonName()
+    public function getPersonName(): string
     {
         return $this->personName;
     }
 
-    public function getOib()
+    public function getOib(): string
     {
         return $this->oib;
     }
 
+    /**
+     * @return string|null
+     */
     public function getPdvID()
     {
         return $this->pdvID;
     }
 
+    /**
+     * @return string|null
+     */
     public function getPhoneNumber()
     {
         return $this->phoneNumber;
     }
 
+    /**
+     * @return string|null
+     */
     public function getEmail()
     {
         return $this->email;
     }
 
-    public function getStreet()
+    public function getStreet(): string
     {
         return $this->street;
     }
 
-    public function getPostalCode()
+    public function getPostalCode(): int
     {
         return $this->postalCode;
     }
 
-    public function getCity()
+    public function getCity(): string
     {
-        return $this->street;
+        return $this->city;
     }
 
-    public function getCountryCode()
+    public function getCountry(): string
     {
-        return $this->countryCode;
+        return $this->country;
     }
 
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }

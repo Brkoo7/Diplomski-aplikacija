@@ -39,11 +39,11 @@ class ArticleController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $formArticle = $form->getData();
             $entityManager = $this->getDoctrine()->getManager();
-            $article = new Article();
-            $article->setName($formArticle->name);
-            $article->setTotalPrice($formArticle->totalPrice);
-            $article->setTaxRate($formArticle->taxRate);
-
+            $article = new Article(
+                $formArticle->name,
+                $formArticle->totalPrice,
+                $formArticle->taxRate
+            );
             $userAdministration->addArticle($article);
 
             // Spremiti

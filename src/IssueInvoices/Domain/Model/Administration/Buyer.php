@@ -26,31 +26,27 @@ class Buyer
      * @var string
      * @ORM\Column(type="string", length=50)
      */
-    private $name = '';
+    private $name;
 
     /**
-     * OIB.
-     *
-     * @var string
-     * @ORM\Column(type="string", length=15)
-     */
-    private $oib = '';
-
-    /**
-     * PDV broj
-     *
-     * @var string
-     * @ORM\Column(name="pdv_id", type="string", length=15)
-     */
-    private $pdvID = '';
-
-    /**
-     * Adresa
-     *
      * @var string
      * @ORM\Column(name="address", type="string")
      */
-    private $address = '';
+    private $address;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=15, nullable=true)
+     */
+    private $oib;
+
+    /**
+     * PDV ID broj
+     * 
+     * @var string
+     * @ORM\Column(name="pdv_id", type="string", length=15, nullable=true)
+     */
+    private $pdvID;
 
     /**
      * @ORM\ManyToOne(targetEntity="Administration", inversedBy="buyers")
@@ -58,19 +54,15 @@ class Buyer
      */
     private $administration;
 
+    public function __construct(string $name, string $address)
+    {
+        $this->name = $name;
+        $this->address = $address;
+    }
+
     public function setName(string $name)
     {
         $this->name = $name;
-    }
-
-    public function setOib(string $oib)
-    {
-        $this->oib = $oib;
-    }
-
-    public function setPdvId(string $pdvId)
-    {
-        $this->pdvId = $pdvId;
     }
 
     public function setAddress(string $address)
@@ -78,33 +70,59 @@ class Buyer
         $this->address = $address;
     }
 
-    public function setAdministration($administration)
+    /**
+     * Postavlja OIB broj kupca
+     * 
+     * @param string|null $oib
+     */
+    public function setOib($oib)
+    {
+        $this->oib = $oib;
+    }
+
+    /**
+     * Postavlja PDV ID broj kupca
+     * 
+     * @param string|null $oib
+     */
+    public function setPdvId($pdvID)
+    {
+        $this->pdvID = $pdvID;
+    }
+
+    public function setAdministration(Administration $administration)
     {
         $this->administration = $administration;
     }
 
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
+    public function getAddress(): string
+    {
+        return $this->address;
+    }
+
+    /**
+     * @return string|null
+     */
     public function getOib()
     {
         return $this->oib;
     }
 
-    public function getPdvID()
+    /**
+     * @return string|null
+     */
+    public function getPdvId()
     {
         return $this->pdvID;
-    }
-
-    public function getAddress()
-    {
-        return $this->address;
     }
 }

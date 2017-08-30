@@ -12,8 +12,16 @@ class HomeController extends Controller
      */
     public function homeAction(Request $request)
     {
-        $response = $this->render('AppBundle:Administration:home.html.twig');
+        $userAdministration = $this->getUser()->getAdministration();
+        $status = [
+        	'seller' => $userAdministration->isExistSeller(),
+        	'office' => $userAdministration->isExistOffice(),
+        	'cashRegister' => $userAdministration->isExistCashRegister(),
+        	'operator' => $userAdministration->isExistOperator()
+        ];
 
-        return $response;
+        return $this->render('AppBundle:Administration:home.html.twig', [
+            'status' => $status
+        ]);
     }
 }

@@ -10,7 +10,7 @@ class Article
      * @Assert\NotBlank
      * @Assert\Length(
      *      min = 2,
-     *      max = 15,
+     *      max = 30,
      *      minMessage = "Naziv artikla mora imati barem {{ limit }} znakova",
      *      maxMessage = "Naziv artikla ne može imati više od {{ limit }} znakova"
      * )

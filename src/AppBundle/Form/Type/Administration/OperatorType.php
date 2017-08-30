@@ -13,14 +13,14 @@ class OperatorType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('name', TextType::class, [
+                'label' => 'Ime i prezime'
+            ])
             ->add('oib', TextType::class, [
                 'label' => 'Oib'
             ])
             ->add('label', TextType::class, [
                 'label' => 'Oznaka'
-            ])
-            ->add('name', TextType::class, [
-                'label' => 'Ime'
             ])
         ;
     }

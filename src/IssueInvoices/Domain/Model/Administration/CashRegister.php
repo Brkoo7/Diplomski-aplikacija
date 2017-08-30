@@ -8,7 +8,7 @@ use DateTime;
 /**
  * Naplatni uređaj.
  *
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="IssueInvoices\Infrastructure\Doctrine2\CashRegisterRepositoryImpl")
  * @ORM\Table(name="administration_cash_register")
  */
 class CashRegister
@@ -34,7 +34,12 @@ class CashRegister
      */
     private $office;
 
-    public function setOffice($office)
+    public function __construct(string $label)
+    {
+        $this->label = $label;
+    }
+
+    public function setOffice(Office $office)
     {
         $this->office = $office;
     }
@@ -44,13 +49,18 @@ class CashRegister
         $this->label = $label;
     }
 
-    public function getLabel()
+    public function getLabel(): string
     {
         return $this->label;
     }
 
-    public function getOffice()
+    public function getOffice(): Office
     {
         return $this->office;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
     }
 }

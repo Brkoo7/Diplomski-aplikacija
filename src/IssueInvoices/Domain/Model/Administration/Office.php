@@ -38,6 +38,14 @@ class Office
     private $address;
 
     /**
+     * Mjesto prostora
+     *
+     * @var string
+     * @ORM\Column(type="string")
+     */
+    private $city;
+
+    /**
      * Naplatni uređaji (blagajne)
      *
      * @var CashRegister[]
@@ -51,12 +59,15 @@ class Office
      */
     private $administration;
 
-    public function __construct()
+    public function __construct(string $label, string $address, string $city)
     {
         $this->cashRegisters = new ArrayCollection();
+        $this->label = $label;
+        $this->address = $address;
+        $this->city = $city;
     }
 
-    public function addCashRegister($cashRegister)
+    public function addCashRegister(CashRegister $cashRegister)
     {
         $cashRegister->setOffice($this);
         $this->cashRegisters->add($cashRegister);
@@ -72,22 +83,32 @@ class Office
         $this->address = $address;
     }
 
-    public function setAdministration($administration)
+    public function setCity(string $city)
+    {
+        $this->city = $city;
+    }
+
+    public function setAdministration(Administration $administration)
     {
         $this->administration = $administration;
     }
 
-    public function getLabel()
+    public function getLabel(): string
     {
         return $this->label;
     }
 
-    public function getAddress()
+    public function getAddress(): string
     {
         return $this->address;
     }
 
-    public function getId()
+    public function getCity(): string
+    {
+        return $this->city;
+    }
+
+    public function getId(): int
     {
         return $this->id;
     }

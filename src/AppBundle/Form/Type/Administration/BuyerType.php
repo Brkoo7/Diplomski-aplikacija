@@ -16,14 +16,14 @@ class BuyerType extends AbstractType
             ->add('name', TextType::class, [
                 'label' => 'Ime i prezime kupca'
             ])
+            ->add('address', TextType::class, [
+                'label' => 'Adresa'
+            ])
             ->add('oib', TextType::class, [
                 'label' => 'OIB'
             ])
             ->add('pdvID', TextType::class, [
                 'label' => 'PDV ID'
-            ])
-            ->add('address', TextType::class, [
-                'label' => 'Adresa'
             ])
         ;
     }
@@ -33,6 +33,7 @@ class BuyerType extends AbstractType
         $resolver->setDefaults(array(
             'method' => 'post',
             'data_class' => Buyer::class,
+            'attr'=> ['novalidate'=>'novalidate']
         ));
     }
 }

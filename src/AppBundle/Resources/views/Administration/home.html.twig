@@ -9,19 +9,20 @@
                 <p>Da bi se izdavali računi potrebno je osigurati da su unešeni sljedeći podaci: </p>
                 <ul>
                     <li>
-                        Podaci prodavatelja <span class="status"></span>
+                        Podaci prodavatelja: {{status.seller ? 'OK' : 'NOK'}} <span class="status"></span>
                     </li>
                     <li>
-                        Podaci poslovnog prostora 
+                        Podaci poslovnog prostora: {{status.office ? 'OK' : 'NOK'}} 
                         <span class="status"></span>
                     </li>
                     <li>
-                        Podaci naplatnog uređaja <span class="status"></span>
+                        Podaci naplatnog uređaja: {{status.cashRegister ? 'OK' : 'NOK'}} <span class="status"></span>
                     </li>
                     <li>
-                        Podaci operatera <span class="status"></span>
+                        Podaci operatera: {{status.operator ? 'OK' : 'NOK'}} <span class="status"></span>
                     </li>
                 </ul>
+                <p>Moguce izdavati racune: </p>
             </div>
         </div>
     </div>

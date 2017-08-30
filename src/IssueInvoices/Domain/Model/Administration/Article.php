@@ -35,7 +35,7 @@ class Article
     private $totalPrice;
 
     /**
-     * Postotak PDV-a (u RH može biti 5, 13, 25)
+     * Postotak PDV-a
      *
      * @ORM\Column(type="float")
      */
@@ -46,6 +46,13 @@ class Article
      * @ORM\JoinColumn(name="administration_id", referencedColumnName="id")
      */
     private $administration;
+
+    public function __construct(string $name, float $totalPrice, float $taxRate)
+    {
+        $this->name = $name;
+        $this->totalPrice = $totalPrice;
+        $this->taxRate = $taxRate;
+    }
 
     public function setName(string $name)
     {
@@ -62,27 +69,27 @@ class Article
         $this->taxRate = $taxRate;
     }
 
-    public function setAdministration($administration) 
+    public function setAdministration(Administration $administration) 
     {
         $this->administration = $administration;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function getTotalPrice()
+    public function getTotalPrice(): float
     {
         return $this->totalPrice;
     }
 
-    public function getTaxRate()
+    public function getTaxRate(): float
     {
         return $this->taxRate;
     }
 
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }

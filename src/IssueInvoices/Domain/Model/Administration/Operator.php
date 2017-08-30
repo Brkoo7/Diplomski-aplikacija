@@ -21,6 +21,14 @@ class Operator
     private $id;
 
     /**
+     * Ime i prezime
+     *
+     * @var string
+     * @ORM\Column(type="string")
+     */
+    private $name;
+
+    /**
      * @ORM\Column(type="string", length=15)
      */
     private $oib;
@@ -34,18 +42,22 @@ class Operator
     private $label;
 
     /**
-     * Ime i prezime
-     *
-     * @var string
-     * @ORM\Column(type="string")
-     */
-    private $name;
-
-    /**
      * @ORM\ManyToOne(targetEntity="Administration", inversedBy="operators")
      * @ORM\JoinColumn(name="administration_id", referencedColumnName="id")
      */
     private $administration;
+
+    public function __construct(string $name, string $oib, string $label)
+    {
+        $this->name = $name;
+        $this->oib = $oib;
+        $this->label = $label;
+    }
+
+    public function setName(string $name)
+    {
+        $this->name = $name;
+    }
 
     public function setOib(string $oib)
     {
@@ -57,27 +69,22 @@ class Operator
         $this->label = $label;
     }
 
-    public function setName(string $name)
-    {
-        $this->name = $name;
-    }
-
-    public function setAdministration($administration)
+    public function setAdministration(Administration $administration)
     {
         $this->administration = $administration;
     }
 
-    public function getName() 
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function getLabel()
+    public function getLabel(): string
     {
         return $this->label;
     }
 
-    public function getOib()
+    public function getOib(): string
     {
         return $this->oib;
     }

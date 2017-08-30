@@ -8,31 +8,58 @@ class Seller
 {
     /**
      * @Assert\NotBlank
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 30,
+     *      minMessage = "Naziv tvrtke mora imati barem {{ limit }} znakova",
+     *      maxMessage = "Naziv tvrtke ne može imati više od {{ limit }} znakova"
+     * )
      */
     public $companyName;
 
     /**
      * @Assert\NotBlank
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 30,
+     *      minMessage = "Naziv osobe mora imati barem {{ limit }} znakova",
+     *      maxMessage = "Naziv osobe ne može imati više od {{ limit }} znakova"
+     * )
      */
     public $personName;
 
     /**
      * @Assert\NotBlank
+     * @Assert\Type(type="numeric")
+     * @Assert\Length(
+     *     min=11,
+     *     max=15
+     * )
      */
     public $oib;
 
     /**
-     * @Assert\NotBlank
+     * @Assert\Type(type="string")
+     * @Assert\Length(
+     *     min=11,
+     *     max=15
+     * )
      */
     public $pdvID;
 
     /**
-     * @Assert\NotBlank
+     * @Assert\Type(type="string")
+     * @Assert\Length(
+     *     max=15
+     * )
      */
     public $phoneNumber;
 
     /**
-     * @Assert\NotBlank
+     * @Assert\Email(
+     *     message = "The email '{{ value }}' is not a valid email.",
+     *     checkMX = true
+     * )
      */
     public $email;
 
@@ -43,21 +70,27 @@ class Seller
 
     /**
      * @Assert\NotBlank
+     * @Assert\Type(type="numeric")
+     * @Assert\Length(
+     *     max=10
+     * )
      */
     public $postalCode;
 
     /**
      * @Assert\NotBlank
+     * @Assert\Type(type="string")
      */
     public $city;
 
     /**
      * @Assert\NotBlank
+     * @Assert\Type(type="string")
+     * @Assert\Length(
+     *     max=30
+     * )
      */
-    public $countryCode;
+    public $country;
 
-    /**
-     * @Assert\NotBlank
-     */
     public $inVATSystem;
 }

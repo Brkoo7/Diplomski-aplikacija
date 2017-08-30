@@ -19,6 +19,9 @@ class OfficeType extends AbstractType
             ->add('address', TextType::class, [
                 'label' => 'Adresa'
             ])
+            ->add('city', TextType::class, [
+                'label' => 'Mjesto'
+            ])
         ;
     }
 

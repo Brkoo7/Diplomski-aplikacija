@@ -40,10 +40,11 @@ class OperatorController extends Controller
             $formOperator = $form->getData();
             $entityManager = $this->getDoctrine()->getManager();
 
-            $operator = new Operator();
-            $operator->setName($formOperator->name);
-            $operator->setOib($formOperator->oib);
-            $operator->setLabel($formOperator->label);
+            $operator = new Operator(
+                $formOperator->name,
+                $formOperator->oib,
+                $formOperator->label
+            );
 
             $userAdministration->addOperator($operator);
             $entityManager->persist($userAdministration);

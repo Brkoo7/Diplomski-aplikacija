@@ -69,13 +69,21 @@ class SecurityController extends Controller
             $user->setPassword($password);
             
             // 4) save the User!
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($user);
-            $em->flush();
+            try {
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($user);
+                $em->flush();    
+            } catch(\Exception $e) {
+                $this->addFlash(
+                    'notice',
+                    'Korisnik već postoji'
+                );
 
+            }
+            
             // ... do any other work - like sending them an email, etc
             // maybe set a "flash" success message for the user
-             $this->authenticateUser($user);
+            $this->authenticateUser($user);
 
             $url = $this->generateUrl('AppBundle_Administration_home');
 

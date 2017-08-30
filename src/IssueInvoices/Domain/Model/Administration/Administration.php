@@ -5,6 +5,7 @@ namespace IssueInvoices\Domain\Model\Administration;
 use Doctrine\ORM\Mapping as ORM;
 use IssueInvoices\Domain\Model\Invoice\BaseInvoice as Invoice;
 use Doctrine\Common\Collections\ArrayCollection;
+use IssueInvoices\Domain\Model\User\User;
 use DateTime;
 
 /**
@@ -23,6 +24,7 @@ class Administration
     private $id;
 
     /**
+     * @var Seller
      * @ORM\OneToOne(targetEntity="Seller", mappedBy="administration", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     private $seller;
@@ -54,6 +56,7 @@ class Administration
     private $operators;
 
     /**
+     * @var User
      * @ORM\OneToOne(targetEntity="IssueInvoices\Domain\Model\User\User", inversedBy="administration")
      */
     private $user;
@@ -73,12 +76,12 @@ class Administration
         $this->invoices = new ArrayCollection();
     }
 
-    public function setUser($user)
+    public function setUser(User $user)
     {
         $this->user = $user;
     }
 
-    public function setSeller($seller) 
+    public function setSeller(Seller $seller) 
     {
         $seller->setAdministration($this);
         $this->seller = $seller;
@@ -108,24 +111,7 @@ class Administration
         $this->operators->add($operator);
     }
 
-    public function addCashRegisterForOffice($cashRegister, $office)
-    {
-        $cashRegister->setOffice($office);
-        $office->addCashRegister($cashRegister);
-    }
-
-    public function getCashRegisters()
-    {
-        $cashRegisters = [];
-        $offices = $this->getOffices();
-        foreach ($offices as $office) {
-            $cashRegisters[] = $office->getCashRegisters();
-        }
-
-        return $cashRegisters;
-    }
-
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -155,7 +141,18 @@ class Administration
         return $this->operators;
     }
 
-    public function getOperatorById(int $id)
+    public function getAllCashRegisters()
+    {
+        $cashRegisters = [];
+        foreach ($this->offices as $office) {
+            foreach ($office->getCashRegisters() as $register) {
+                $cashRegisters[] = $register;
+            }
+        }
+        return $cashRegisters;
+    }
+
+    public function getOperatorById(int $id): Operator
     {
         foreach ($this->operators as $operator) {
             if ($operator->getId() === $id) {
@@ -174,7 +171,7 @@ class Administration
         }
     }
 
-    public function getOfficeById(int $id)
+    public function getOfficeById(int $id): Office
     {
         foreach ($this->offices as $office) {
             if ($office->getId() === $id) {
@@ -193,7 +190,7 @@ class Administration
         }
     }
 
-    public function getBuyerById(int $id)
+    public function getBuyerById(int $id): Buyer
     {
         foreach ($this->buyers as $buyer) {
             if ($buyer->getId() === $id) {
@@ -212,7 +209,7 @@ class Administration
         }
     }
 
-    public function getArticleById(int $id)
+    public function getArticleById(int $id): Article
     {
         foreach ($this->articles as $article) {
             if ($article->getId() === $id) {
@@ -229,5 +226,32 @@ class Administration
                 $this->articles->removeElement($article);
             }
         }
+    }
+
+    public function isExistSeller(): bool
+    {
+        return $this->getSeller() ? true : false;
+    }
+
+    public function isExistOffice(): bool
+    {
+        return count($this->getOffices()) ? true : false;
+    }
+
+    public function isExistCashRegister(): bool
+    {
+        $offices = $this->getOffices();
+        foreach ($offices as $office) {
+            if (count($office->getCashRegisters()) >= 1) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function isExistOperator(): bool
+    {
+        return count($this->getOperators()) ? true : false;
     }
 }

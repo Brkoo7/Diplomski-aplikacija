@@ -40,9 +40,11 @@ class OfficeController extends Controller
             $formOffice = $form->getData();
             $entityManager = $this->getDoctrine()->getManager();
 
-            $office = new Office();
-            $office->setLabel($formOffice->label);
-            $office->setAddress($formOffice->address);
+            $office = new Office(
+                $formOffice->label,
+                $formOffice->address,
+                $formOffice->city
+            );
 
             $userAdministration->addOffice($office);
             $entityManager->persist($userAdministration);
@@ -69,6 +71,7 @@ class OfficeController extends Controller
 
         $formOffice->label = $office->getLabel();
         $formOffice->address = $office->getAddress();
+        $formOffice->city = $office->getCity();
 
         $form = $this->createForm(OfficeType::class, $formOffice);
         $form->handleRequest($request);
@@ -79,6 +82,7 @@ class OfficeController extends Controller
             
             $office->setLabel($formOffice->label);
             $office->setAddress($formOffice->address);
+            $office->setCity($formOffice->city);
 
             $entityManager->flush();
 

@@ -4,6 +4,9 @@ namespace AppBundle\Form\Model\Administration;
 use Symfony\Component\Validator\Constraints as Assert;
 use AppBundle\Validator\Constraints as AcmeAssert;
 
+/**
+ * @todo  mora postojati ili oib ili pdvid
+ */
 class Buyer
 {
     /**
@@ -11,7 +14,7 @@ class Buyer
      * @Assert\Type(type="string")
      * @Assert\Length(
      *      min = 2,
-     *      max = 15,
+     *      max = 25,
      *      minMessage = "Ime mora imati barem {{ limit }} znakova",
      *      maxMessage = "Ime ne može imati više od {{ limit }} znakova"
      * )
@@ -20,33 +23,25 @@ class Buyer
 
     /**
      * @Assert\NotBlank
-     * @Assert\Type(type="integer")
-     * @Assert\Length(
-     *      min = 2,
-     *      max = 15,
-     *      minMessage = "Naziv artikla mora imati barem {{ limit }} znakova",
-     *      maxMessage = "Naziv artikla ne može imati više od {{ limit }} znakova"
-     * )
+     * @Assert\Type(type="string")
      */
+    public $address;
     
     /**
      * @Assert\Type(type="numeric")
      * @Assert\Length(
      *     min=11,
-     *     exactMessage = "OIB mora imati {{ limit }} brojeva",
+     *     max=15
      * )
      */
     public $oib;
 
     /**
-     * @Assert\NotBlank
      * @Assert\Type(type="numeric")
+     * @Assert\Length(
+     *     min=11,
+     *     max=15
+     * )
      */
     public $pdvID;
-
-    /**
-     * @Assert\NotBlank
-     * @Assert\Type(type="string")
-     */
-    public $address;
 }

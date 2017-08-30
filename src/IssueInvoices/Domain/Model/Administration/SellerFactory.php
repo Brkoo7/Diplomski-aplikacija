@@ -31,7 +31,8 @@ class SellerFactory
         $seller->setEmail($sellerData->email);
         $seller->setStreet($sellerData->street);
         $seller->setPostalCode($sellerData->postalCode);
-        $seller->setCountryCode($sellerData->countryCode);
+        $seller->setCountry($sellerData->country);
+        $seller->setCity($sellerData->city);
         $seller->setInVatSystem($sellerData->inVATSystem);
 
         return $seller;
