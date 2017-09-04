@@ -185,7 +185,7 @@ class Seller
         return $this->companyName;
     }
 
-    public function getInVatSystem(): bool
+    public function isInVatSystem(): bool
     {
         return $this->inVATSystem;
     }

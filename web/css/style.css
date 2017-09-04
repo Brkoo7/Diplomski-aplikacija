@@ -114,3 +114,20 @@ footer {
     text-align: center;
     padding: 3px;
 }
+
+.articles {
+    list-style-type: none;
+    margin: 0px;
+    padding: 0px;
+}
+
+.articles li {
+    box-shadow: 0px 2px 5px grey;
+    position: relative;
+}
+
+.articles li .remove {
+    position: absolute;
+    top: -7px;
+    left: 0px;
+}

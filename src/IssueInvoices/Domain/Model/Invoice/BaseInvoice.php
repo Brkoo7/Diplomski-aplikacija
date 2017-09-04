@@ -7,13 +7,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 use IssueInvoices\Domain\Model\User\User;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="IssueInvoices\Infrastructure\Doctrine2\InvoiceRepositoryImpl")
  * @ORM\Table(name="invoice")
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="type", type="string")
  * @ORM\DiscriminatorMap({
- *  "ORDINAL" = "OrdinalInvoice",
- *  "FISCAL" = "FiscalInvoice",
+ *  "ORDINAL" = "Invoice",
+ *  "VAT" = "VATInvoice",
  *  "CANCEL" = "CancelInvoice"
  * })
  */
@@ -57,14 +57,6 @@ abstract class BaseInvoice
     protected $articleCalculations;
 
     /**
-     * Vrsta računa.
-     *
-     * @var InvoiceType
-     * @ORM\Column(name="invoice_type", type="string", nullable=true)
-     */
-    protected $invoiceType;
-
-    /**
      * Mjesto izdavanja.
      *
      * @var string
@@ -79,20 +71,7 @@ abstract class BaseInvoice
      */
     protected $notes;
 
-    /* 
-     * @var float
-     * @ORM\Column(name="base_amount", type="float")
-     */
-    protected $baseAmount;
-
-    /* 
-     * @var float
-     * @ORM\Column(name="tax_amount", type="float")
-     */
-    protected $taxAmount;
-
-    /* 
-     * @var float
+    /*
      * @ORM\Column(name="total_amount", type="float")
      */
     protected $totalAmount;
@@ -102,9 +81,16 @@ abstract class BaseInvoice
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     protected $user;
-    
+
     public function __construct()
     {
         $this->articleCalculations = new ArrayCollection();
     }
+
+    public function addArticleCalculation(ArticleCalculation $articleCalculation)
+    {
+        $this->articleCalculations->add($articleCalculation);
+    }
+
+
 }

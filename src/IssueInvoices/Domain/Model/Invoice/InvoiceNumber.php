@@ -44,4 +44,11 @@ class InvoiceNumber
      * @ORM\Column(name="cash_register", type="string")
      */
     private $cashRegister;
+
+    public function __construct(int $ordinal, string $office, string $cashRegister) 
+    {
+        $this->ordinal = $ordinal;
+        $this->office = $office;
+        $this->cashRegister = $cashRegister;
+    }
 }

@@ -1,96 +1,111 @@
 <?php
-
 namespace IssueInvoices\Domain\Model\Invoice;
-
+    
+/**
+ * Načini plačanja računa
+ */
 class PaymentType
 {
     /**
-     * Identifikator vrste
+     * Naziv trenutačne opcije
      *
-     * @var int
+     * @var string
      */
-    private $id;
+    private $name;
 
     /**
-     * Podržane vrste
+     * @param string $name Naziv opcije
+     * 
+     * @throws InvalidArgumentException Ako zadana opcije nije ispravna
      */
-    static private $supported = [
-        1 => ['CASH', 'Gotovina'],
-        2 => ['CREDIT_CARD', 'Kartice'],
-        4 => ['TRANSACTION_ACCOUNT', 'Transakcijski račun'],
-        5 => ['OTHER', 'Ostalo'],
-    ];
+    public function __construct($name)
+    {
+        
+        $this->name = (string) $name;
+    }
+
+    public function __toString()
+    {
+        return $this->name();
+    }
 
     /**
-     * @param int $id
+     * Dohvaća naziv
      *
-     * @throws InvalidArgumentException Ako zadani tip identifikatora racuna nije podrzan
+     * @return string
      */
-    private function __construct(int $id)
+    public function name()
     {
-        if (!isset(self::$supported[(int) $id]))
-            throw new InvalidArgumentException(sprintf('Identifikator tipa placanja: %d nije podržan', $id));
-        $this->id = (int) $id;
+        return $this->name;
     }
 
-    static public function fromInteger($integer): self
+    /**
+     * Dohvaća naslov
+     */
+    public function titleName()
     {
-        return new self($integer);
+        return self::names()[$this->name];
     }
 
-    public function toInteger(): int
+    /**
+     * Je li trenutačna opcija jednaka zadanoj
+     *
+     * @param self|string $other Opcija ili naziv opcije (ako nije opcija, vrši se pretvaranje u string)
+     * @return bool
+     */
+    public function equals($other)
     {
-        return $this->id;
+        $otherName = $other instanceof static ? $other->name : (string)$other;
+        return $this->name == $otherName;
     }
 
-    public function sameAs(self $other): bool
+    /**
+     * Provjerava radi li se o gotovini.
+     *
+     * @return bool
+     */
+    public function isCash()
     {
-        return $this->id == $other->id;
+        return $this->equals('CASH');
     }
 
-
-    static public function bankNoteType(): self
+    /**
+     * Provjerava radi li se o kartici.
+     *
+     * @return bool
+     */
+    public function isCreditCard()
     {
-        return new self(1);
+        return $this->equals('CREDIT_CARD');
     }
 
-    static public function cardType(): self
+    /**
+     * Provjerava radi li se o transakcijskom računu.
+     *
+     * @return bool
+     */
+    public function isTransactionAccount()
     {
-        return new self(2);
+        return $this->equals('TRANSACTION_ACCOUNT');
     }
 
-    static public function checkType(): self
+    /**
+     * Provjerava radi li se o ostalim načinima plaćanja.
+     *
+     * @return bool
+     */
+    public function isOther()
     {
-        return new self(3);
+        return $this->equals('OTHER');
     }
 
-    static public function transactionAccountType(): self
+    public static function names()
     {
-        return new self(4);
-    }
-
-    public function isBankNotes(): bool
-    {
-        return $this->id == 1;
-    }
-
-    public function isCard(): bool
-    {
-        return $this->id == 2;
-    }
-
-    public function isCheck(): bool
-    {
-        return $this->id == 3;
-    }
-
-    public function isTransactionAccount(): bool
-    {
-        return $this->id == 4;
-    }
-
-    public function title(): string
-    {
-        return self::$supported[$this->id][0];
+        return [
+            'CASH' => 'Gotovina',
+            'CREDIT_CARD' => 'Kreditna kartica',
+            'TRANSACTION_ACCOUNT' => 'Transakcijski račun',
+            'OTHER' => 'Ostalo'
+        ];
     }
 }

@@ -1,5 +1,6 @@
 <?php
 namespace IssueInvoices\Domain\Model\Invoice;
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -11,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Entity
  */
-class FiscalInvoice extends BaseInvoice
+class Invoice extends BaseInvoice
 {
     /**
      * Broj računa.
@@ -19,7 +20,7 @@ class FiscalInvoice extends BaseInvoice
      * @var Number
      * @ORM\OneToOne(targetEntity="InvoiceNumber", cascade={"persist", "remove"}, orphanRemoval=true)
      */
-    private $number;
+    protected $number;
 
     /**
      * Oznaka operatera
@@ -27,7 +28,7 @@ class FiscalInvoice extends BaseInvoice
      * @var string
      * @ORM\Column(type="string", length=20)
      */
-    private $operatorLabel;
+    protected $operatorLabel;
 
     /**
      * Ime i prezime operatera
@@ -35,7 +36,7 @@ class FiscalInvoice extends BaseInvoice
      * @var string
      * @ORM\Column(type="string", length=30)
      */
-    private $operatorName;
+    protected $operatorName;
 
     /**
      * OIB operatera
@@ -43,7 +44,7 @@ class FiscalInvoice extends BaseInvoice
      * @var string
      * @ORM\Column(type="string", length=30)
      */
-    private $operatorOIB;
+    protected $operatorOIB;
 
     /**
      * Tip placanja (gotovina, transakcijski račun)
@@ -51,7 +52,7 @@ class FiscalInvoice extends BaseInvoice
      * @var string
      * @ORM\Column(type="string", length=30)
      */
-    private $paymentType;
+    protected $paymentType;
 
     /**
      * Zaštitni kod izdavatelja računa.
@@ -59,7 +60,7 @@ class FiscalInvoice extends BaseInvoice
      * @var string|null
      * @ORM\Column(name="zki_code", type="string", nullable=true)
      */
-    private $ZKICode;
+    protected $ZKICode;
 
     /**
      * Jedinistveni identifikator računa.
@@ -67,5 +68,5 @@ class FiscalInvoice extends BaseInvoice
      * @var string|null
      * @ORM\Column(name="jir_code", type="string", nullable=true)
      */
-    private $JIRCode;
+    protected $JIRCode;
 }

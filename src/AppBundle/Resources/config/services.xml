@@ -9,10 +9,39 @@
     </parameters>
 
     <services>
-        <service id="app.form_search_parameters_type" class="AppBundle\Form\Type\SearchParametersType">
+        <service id="app.form_invoice_type" class="AppBundle\Form\Type\Invoice\InvoiceType">
             <argument type="service" id="doctrine.orm.entity_manager" />
             <tag name="form.type" />
         </service>
+
+        <service id="app.application_service.issue_invoice" class="IssueInvoices\Application\IssueInvoiceService">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="app.invoice_repository" />
+        </service>
+
+        <service id="app.application_service.cancel_invoice" class="IssueInvoices\Application\CancelInvoiceService">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="app.invoice_repository" />
+            <argument type="service" id="app.domain_service.cancel_invoice" />
+        </service>
+
+        <service id="app.domain_service.cancel_invoice" class="IssueInvoices\Domain\Service\CancelInvoiceService">
+        </service>
+
+        <service id="app.domain_service.invoice_number_generator" class="IssueInvoices\Domain\Service\InvoiceNumberGenerator">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+        </service>
+        
+        <!--
+            Doctrine Repozitorije možemo definirati kao servise koristeći mogućnost da servis stvorimo preko tzv. factory
+            metode.
+            U ovom slučaju factory metoda je getRepository() u doctrine.orm.entity_manager servisu koja za argument
+            prima repozitorij koji želimo.
+            Sada će kad god zatražimo servis app.accommodation_repository Symfony za nas pozvati na entity manageru
+            metodu getRepository('AppBundle:Accommodation') i vratiti nam njen rezultat, tj. AccommodationRepository.
+
+            @link http://symfony.com/doc/current/service_container/factories.html službena dokumentacija
+        -->
 
         <service id="app.administration_repository"
             class="IssueInvoices\Infrastructure\Doctrine2\AdministrationRepositoryImpl">
@@ -26,24 +55,22 @@
             <argument>IssueInvoices\Domain\Model\Administration\CashRegister</argument>
         </service>
 
-        <!--
-            Doctrine Repozitorije možemo definirati kao servise koristeći mogućnost da servis stvorimo preko tzv. factory
-            metode.
-            U ovom slučaju factory metoda je getRepository() u doctrine.orm.entity_manager servisu koja za argument
-            prima repozitorij koji želimo.
-            Sada će kad god zatražimo servis app.accommodation_repository Symfony za nas pozvati na entity manageru
-            metodu getRepository('AppBundle:Accommodation') i vratiti nam njen rezultat, tj. AccommodationRepository.
-
-            @link http://symfony.com/doc/current/service_container/factories.html službena dokumentacija
-        -->
-
-        <service id="app.locale_listener" class="AppBundle\EventListener\LocaleListener">
-            <argument>%kernel.default_locale%</argument>
-            <tag name="kernel.event_subscriber" />
+        <service id="app.office_repository"
+            class="IssueInvoices\Infrastructure\Doctrine2\OfficeRepositoryImpl">
+            <factory service="doctrine.orm.entity_manager" method="getRepository"/>
+            <argument>IssueInvoices\Domain\Model\Administration\Office</argument>
         </service>
 
-        <service id="app.image_service" class="AppBundle\View\ImageService">
-            <argument>%app.main_accommodation_images_dir%</argument>
+        <service id="app.article_repository"
+            class="IssueInvoices\Infrastructure\Doctrine2\ArticleRepositoryImpl">
+            <factory service="doctrine.orm.entity_manager" method="getRepository"/>
+            <argument>IssueInvoices\Domain\Model\Administration\Article</argument>
+        </service>
+
+        <service id="app.invoice_repository"
+            class="IssueInvoices\Infrastructure\Doctrine2\InvoiceRepositoryImpl">
+            <factory service="doctrine.orm.entity_manager" method="getRepository"/>
+            <argument>IssueInvoices\Domain\Model\Invoice\BaseInvoice</argument>
         </service>
     </services>
 </container>

@@ -1,5 +1,4 @@
 <?php
-
 namespace IssueInvoices\Domain\Model\Invoice;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -70,6 +69,17 @@ class ArticleCalculation
      * @ORM\ManyToOne(targetEntity="BaseInvoice", inversedBy="articleCalculations")
      */
     private $invoice;
+
+    public function __construct(
+        string $name,
+        float $unitPrice,
+        int $quantity, 
+        float $discount,
+        BaseInvoice $baseInvoice
+        )
+    {
+
+    }
 
     public function setInvoice(BaseInvoice $invoice)
     {

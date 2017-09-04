@@ -81,6 +81,7 @@ class CashRegisterController extends Controller
         );
         $form->handleRequest($request);
 
+
         if ($form->isSubmitted() && $form->isValid()) {
             $formCashRegister = $form->getData();
             $entityManager = $this->getDoctrine()->getManager();

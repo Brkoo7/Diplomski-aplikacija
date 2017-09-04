@@ -40,7 +40,6 @@ class SellerController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $formSeller = $form->getData();
             $entityManager = $this->getDoctrine()->getManager();
-            dump($formSeller);
             $seller = (new SellerFactory())->fromData($formSeller);
 
             $userAdministration->setSeller($seller);
