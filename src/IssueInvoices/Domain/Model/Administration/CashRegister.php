@@ -21,12 +21,12 @@ class CashRegister
     private $id;
 
     /**
-     * Oznaka uređaja
+     * Broj naplatnog uređaja
      *
-     * @var string
-     * @ORM\Column(type="string", length=15)
+     * @var int
+     * @ORM\Column(type="integer")
      */
-    private $label;
+    private $number;
 
     /**
      * @var Office
@@ -34,9 +34,9 @@ class CashRegister
      */
     private $office;
 
-    public function __construct(string $label)
+    public function __construct(int $number)
     {
-        $this->label = $label;
+        $this->number = $number;
     }
 
     public function setOffice(Office $office)
@@ -44,14 +44,14 @@ class CashRegister
         $this->office = $office;
     }
 
-    public function setLabel(string $label)
+    public function setNumber(int $number)
     {
         $this->label = $label;
     }
 
-    public function getLabel(): string
+    public function getNumber(): int
     {
-        return $this->label;
+        return $this->number;
     }
 
     public function getOffice(): Office

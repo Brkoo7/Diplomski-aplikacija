@@ -74,7 +74,7 @@ class SellerController extends Controller
         $formSeller->postalCode = $seller->getPostalCode();
         $formSeller->city = $seller->getCity();
         $formSeller->country = $seller->getCountry();
-        $formSeller->inVATSystem = $seller->getInVatSystem();
+        $formSeller->inVATSystem = $seller->isInVatSystem();
 
         $form = $this->createForm(SellerType::class, $formSeller);
         $form->handleRequest($request);

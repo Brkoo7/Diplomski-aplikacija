@@ -9,10 +9,11 @@ use IssueInvoices\Domain\Model\CancelInvoice;
  */
 class CancelInvoiceService
 {
-	/**
-	 * Stvara storno račun originalnog računa
-	 */
-	public function cancelInvoice(BaseInvoice $invoice): CancelInvoice
-	{
+	// /**
+	//  * Stvara storno račun originalnog računa
+	//  */
+	// public function cancelInvoice(BaseInvoice $invoice): CancelInvoice
+	// {
 		
-	}
+	// }
+}

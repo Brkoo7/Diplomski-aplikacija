@@ -60,7 +60,7 @@ class ArticleCalculation
     /**
      * Iznos popusta
      *
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="float", nullable=true)
      */
     private $discount;
 
@@ -73,12 +73,12 @@ class ArticleCalculation
     public function __construct(
         string $name,
         float $unitPrice,
-        int $quantity, 
-        float $discount,
-        BaseInvoice $baseInvoice
+        int $quantity
         )
     {
-
+        $this->name = $name;
+        $this->unitPrice = $unitPrice;
+        $this->quantity = $quantity;
     }
 
     public function setInvoice(BaseInvoice $invoice)
@@ -86,19 +86,14 @@ class ArticleCalculation
         $this->invoice = $invoice;
     }
 
-    public function setName(string $name)
-    {
-        $this->name = $name;
-    }
-
-    public function setUnitPrice(string $unitPrice)
-    {
-        $this->unitPrice = $unitPrice;
-    }
-
     public function setTaxRate(float $taxRate)
     {
         $this->taxRate = $taxRate;
+    }
+
+    public function setDiscount(float $discount)
+    {
+        $this->discount = $discount;
     }
 
     public function setTotal(float $total)
@@ -106,13 +101,23 @@ class ArticleCalculation
         $this->total = $total;
     }
 
-    public function setQuantity(int $quantity)
+    public function getUnitPrice()
     {
-        $this->quantity = $quantity;
+        return $this->unitPrice;
     }
 
-    public function setDiscount(float $discount)
+    public function getQuantity()
     {
-        $this->discount = $discount;
+        return $this->quantity;
+    }
+
+    public function getTotal()
+    {
+        return $this->total;
+    }
+
+    public function getTaxRate()
+    {
+        return $this->taxRate;
     }
 }

@@ -129,5 +129,21 @@ footer {
 .articles li .remove {
     position: absolute;
     top: -7px;
-    left: 0px;
+    right: 0px;
 }
+
+.articles li .remove {
+    cursor: pointer;
+}
+
+.add_article_link span {
+    position: relative;
+    cursor: pointer;
+    top: -10px;
+    left: 10px;
+}
+
+.gi-2x{font-size: 2em;}
+.gi-3x{font-size: 3em;}
+.gi-4x{font-size: 4em;}
+.gi-5x{font-size: 5em;}

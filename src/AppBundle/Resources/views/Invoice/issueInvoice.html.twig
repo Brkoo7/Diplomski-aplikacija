@@ -13,66 +13,108 @@
             <i class="fa fa-file"></i>Novi
         </li>
     </ol>
-    <div class="row">
-            {{ form_start(form) }}
-        <div class="col-md-2">
-            {{ form_row(form.buyer) }}
+
+
+    {{ form_start(form) }}
+        <div class="row">
+            <div class="col-md-2">
+                {{ form_row(form.buyer) }}
+            </div>
+            <div class="col-md-2">
+                {{ form_row(form.operator) }}
+            </div>
+            <div class="col-md-2">
+                {{ form_row(form.office) }}
+            </div>
+            <div class="col-md-2">
+                {{ form_row(form.cashRegister) }}
+            </div>
+            <div class="col-md-2">
+                {{ form_row(form.paymentType) }}
+            </div>
         </div>
-        <div class="col-md-2">
-            {{ form_row(form.operator) }}
-        </div>
-        <div class="col-md-2">
-            {{ form_row(form.office) }}
-        </div>
-        <div class="col-md-2">
-            {{ form_row(form.cashRegister) }}
-        </div>
-        <div class="col-md-2">
-            {{ form_row(form.paymentType) }}
-        </div>
-    </div>
-                
-    <h3>Artikli: </h3>
-    <ul class="articles row" data-prototype="{{ form_widget(form.articles.vars.prototype)|e('html_attr') }}">
-    </ul>  
-    <br>
-    {{ form_row(form._token) }}
-    <button type="submit" class="btn btn-primary">Izdaj račun</button>
+
+        <h3>Artikli: </h3>
+        <ul class="articles row" data-prototype="{{ form_widget(form.articles.vars.prototype)|e('html_attr') }}">
+        </ul>
+        <br>
+        <button type="submit" class="btn btn-lg btn-primary">Izdaj račun</button>
+
+        {{ form_rest(form) }}
+    </form>
 {% endblock %}
 
 {% block javascripts %}
     {{parent() }}
     <script type="text/javascript">
-        var $collectionHolder;
-        // setup an "add a tag" link
-        var $addArticleLink = $('<button class="btn btn-sm btn-warning"><a href="#" class="add_article_link">Dodaj artikl</a></button>');
-        var $newLinkLi = $('<div></div>').append($addArticleLink);
 
-        jQuery(document).ready(function() {
-            // Get the ul that holds the collection of tags
-            $collectionHolder = $('ul.articles');
+    jQuery(document).ready(function() {
+        var $collectionHolder = $('ul.articles');
+        var $addArticleLink = $('<div class="add_article_link"><span class="glyphicon glyphicon glyphicon-plus gi-2x"></span></div>');
+        var $newLink = $('<div></div>').append($addArticleLink);
+        // add the "add a article" to the article ul
+        $collectionHolder.append($newLink);
 
-            // add the "add a tag" anchor and li to the tags ul
-            $collectionHolder.append($newLinkLi);
+        addArticleForm($collectionHolder, $newLink);
 
-             // add a delete link to all of the existing tag form li elements
-            $collectionHolder.find('li').each(function() {
-                addArticleFormDeleteLink($(this));
-            });
+        // add a delete link to all of the existing tag form li elements
+        $collectionHolder.find('li').each(function() {
+            addArticleFormDeleteLink($(this));
+        });
 
-            // count the current form inputs we have (e.g. 2), use that as the new
-            // index when inserting a new item (e.g. 2)
-            $collectionHolder.data('index', $collectionHolder.find(':input').length);
+        // count the current form inputs we have (e.g. 2), use that as the new
+        // index when inserting a new item (e.g. 2)
+        $collectionHolder.data('index', $collectionHolder.find(':input').length);
 
-            $addArticleLink.on('click', function(e) {
-                // prevent the link from creating a "#" on the URL
-                e.preventDefault();
-                // add a new tag form (see next code block)
-                addArticleForm($collectionHolder, $newLinkLi);
+        $addArticleLink.on('click', function(e) {
+            // prevent the link from creating a "#" on the URL
+            e.preventDefault();
+            // add a new tag form (see next code block)
+            addArticleForm($collectionHolder, $newLink);
+        });
+
+        $('#invoice_office').on('change', function() {
+            var officeId = $(this).val();
+            var url = '{{path("AppBundle_Invoice_changeOffice", {'officeId': 'officeIdVal'}) }}';
+            url = url.replace("officeIdVal", officeId);
+
+            $.ajax({
+                type: "GET",
+                url: url,
+                dataType: "html",
+                success: function (data) {
+                    if (data !== '') {
+                        $('#invoice_cashRegister').prop("disabled", false);
+                        $('#invoice_cashRegister').html(data);
+                    }
+                }
             });
         });
 
-        function addArticleForm($collectionHolder, $newLinkLi) {
+        $collectionHolder.on('change', '.article-choice', function() {
+            var articleId = $(this).val();
+
+            var priceInput = $(this).closest('li').find('.price');
+            var taxInput = $(this).closest('li').find('.tax');
+
+            var url = '{{path("AppBundle_Invoice_changeArticle", {'articleId': 'articleIdVal'}) }}';
+            url = url.replace("articleIdVal", articleId);
+
+            $.ajax({
+                type: "GET",
+                url: url,
+                dataType: "json",
+                success: function (data) {
+                    if (data !== '') {
+                        // Dohvatiti tranutni contejner i u njemu .price i .tax
+                        priceInput.val(data.price);
+                        taxInput.val(data.tax);
+                    }
+                }
+            });
+        });
+
+        function addArticleForm($collectionHolder, $newLink) {
             // Get the data-prototype explained earlier
             var prototype = $collectionHolder.data('prototype');
             // get the new index
@@ -93,23 +135,23 @@
 
             // Display the form in the page in an li, before the "Add a tag" link li
             var $newFormLi = $('<li class="col-md-3"></li>').append(newForm);
-            $newLinkLi.before($newFormLi);
+            $newLink.before($newFormLi);
 
              // add a delete link to the new form
             addArticleFormDeleteLink($newFormLi);
         }
 
-        function addArticleFormDeleteLink($tagFormLi) {
-            var $removeFormA = $('<button class="btn-sm btn-danger remove"><a href="#">Izbriši</a></button>');
-            $tagFormLi.append($removeFormA);
+        function addArticleFormDeleteLink($articleFormLi) {
+            var $removeFormA = $('<div class="remove"><span class="glyphicon glyphicon-remove-circle gi-2x"></span></div>');
+            $articleFormLi.append($removeFormA);
 
             $removeFormA.on('click', function(e) {
                 // prevent the link from creating a "#" on the URL
                 e.preventDefault();
                 // remove the li for the tag form
-                $tagFormLi.remove();
+                $articleFormLi.remove();
             });
         }
-
-    </script>
+    });
+</script>
 {% endblock %}

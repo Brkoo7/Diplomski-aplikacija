@@ -1,5 +1,15 @@
 {% extends 'AppBundle::layout.html.twig' %}
 
+{% macro printStatus(status) %}
+    {% if status == true %}
+        <span class="glyphicon glyphicon-ok gi-1x"></span>
+    {% else %}
+        <span class="glyphicon glyphicon-remove gi-1x"></span>
+    {% endif %}
+{% endmacro %}
+
+{% import _self as helper %}
+
 {% block content %}
 
   <div class="row">
@@ -9,20 +19,31 @@
                 <p>Da bi se izdavali računi potrebno je osigurati da su unešeni sljedeći podaci: </p>
                 <ul>
                     <li>
-                        Podaci prodavatelja: {{status.seller ? 'OK' : 'NOK'}} <span class="status"></span>
+                        Podaci prodavatelja: {{ helper.printStatus(status.seller)}}
                     </li>
                     <li>
-                        Podaci poslovnog prostora: {{status.office ? 'OK' : 'NOK'}} 
-                        <span class="status"></span>
+                        Podaci poslovnog prostora: {{ helper.printStatus(status.office)}}
                     </li>
                     <li>
-                        Podaci naplatnog uređaja: {{status.cashRegister ? 'OK' : 'NOK'}} <span class="status"></span>
+                        Podaci naplatnog uređaja: {{ helper.printStatus(status.cashRegister)}}
                     </li>
                     <li>
-                        Podaci operatera: {{status.operator ? 'OK' : 'NOK'}} <span class="status"></span>
+                        Podaci operatera: {{ helper.printStatus(status.operator)}}
                     </li>
                 </ul>
-                <p>Moguce izdavati racune: </p>
+                <h4>
+                    Status: 
+                    {% if (status.seller and status.office and status.cashRegister and status.operator) %}
+                        <span class="glyphicon glyphicon-ok gi-2x"></span>
+                    {% else %}
+                        <span class="glyphicon glyphicon-remove gi-2x"></span>
+                    {% endif %}
+                </h4>
+                {% for flash_message in app.session.flashBag.get('notice') %}
+                    <div class="flash-notice">
+                        <h4 class="text-danger">{{ flash_message }}</h3>
+                    </div>
+                {% endfor %}
             </div>
         </div>
     </div>

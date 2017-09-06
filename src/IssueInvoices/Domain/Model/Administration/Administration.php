@@ -1,5 +1,4 @@
 <?php
-
 namespace IssueInvoices\Domain\Model\Administration;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -245,5 +244,17 @@ class Administration
     public function isExistOperator(): bool
     {
         return count($this->getOperators()) ? true : false;
+    }
+
+    public function isReadyForIssueInvoices(): bool
+    {
+        if ($this->isExistOperator() 
+            && $this->isExistOffice() 
+            && $this->isExistSeller() 
+            && $this->isExistCashRegister()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

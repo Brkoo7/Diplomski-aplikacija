@@ -50,6 +50,16 @@ class Buyer
      */
     private $pdvID;
 
+    public function __construct(
+        string $name,
+        string $address,
+        string $oib
+    ) {
+        $this->name = $name;
+        $this->address = $address;
+        $this->oib = $oib;
+    }
+
     public function setName(string $name)
     {
         $this->name = $name;

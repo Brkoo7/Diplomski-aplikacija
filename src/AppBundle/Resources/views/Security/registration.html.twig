@@ -12,11 +12,7 @@
                     <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
                         {{ form_start(form) }}
                         {{ form_row(form.email) }}
-                        {% for flash_message in app.session.flashBag.get('notice') %}
-                            <div class="flash-notice">
-                                {{ flash_message }}
-                            </div>
-                        {% endfor %}
+                        
                         {{ form_row(form.plainPassword.first) }}
                         {{ form_row(form.plainPassword.second) }}
                         <button type="submit" style="margin-top: 20px";>Registriraj me!</button>

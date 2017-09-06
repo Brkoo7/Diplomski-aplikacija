@@ -6,6 +6,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use AppBundle\Form\Model\Administration\CashRegister;
 
@@ -16,8 +17,8 @@ class CashRegisterType extends AbstractType
         $offices = $options['offices'];
 
         $builder
-            ->add('label', TextType::class, [
-                'label' => 'Oznaka blagajne'
+            ->add('number', IntegerType::class, [
+                'label' => 'Broj blagajne'
             ])
             ->add('office', ChoiceType::class, [
                 'choices' => $offices,

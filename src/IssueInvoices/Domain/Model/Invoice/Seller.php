@@ -95,23 +95,24 @@ class Seller
      * Država.
      *
      * @var string
-     * @ORM\Column(type="string", length=20)
+     * @ORM\Column(type="string", length=20, nullable=true)
      */
     private $country;
 
-    public function setCompanyName(string $companyName)
-    {
-        $this->companyName = $companyName;
-    }
-
-    public function setPersonName(string $personName)
-    {
+    public function __construct(
+        string $companyName, 
+        string $personName,
+        string $oib,
+        string $street,
+        int $postalCode,
+        string $city
+    ) {
+        $this->companyName = $companyName;  
         $this->personName = $personName;
-    }
-
-    public function setOib(string $oib)
-    {
         $this->oib = $oib;
+        $this->street = $street;
+        $this->postalCode = $postalCode;
+        $this->city = $city;
     }
 
     public function setPdvID($pdvID)
@@ -127,25 +128,5 @@ class Seller
     public function setEmail($email)
     {
         $this->email = $email;
-    }
-
-    public function setStreet($street)
-    {
-        $this->street = $street;
-    }
-
-    public function setPostalCode(int $postalCode)
-    {
-        $this->postalCode = $postalCode;
-    }
-
-    public function setCountry(string $country)
-    {
-        $this->country = $country;
-    }
-
-    public function setCity(string $city)
-    {
-        $this->city = $city;
     }
 }

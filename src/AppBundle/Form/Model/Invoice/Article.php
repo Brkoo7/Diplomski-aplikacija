@@ -22,13 +22,11 @@ class Article
     public $quantity;
 
     /**
-     * @Assert\NotBlank
      * @Assert\Type(type="float")
      */
     public $discount;
 
     public function __construct()
     {
-        $this->quantity = 1;
     }
 }

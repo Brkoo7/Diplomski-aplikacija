@@ -2,6 +2,7 @@
 namespace IssueInvoices\Domain\Model\Invoice;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Obveznici fizkalizacije:
@@ -69,4 +70,29 @@ class Invoice extends BaseInvoice
      * @ORM\Column(name="jir_code", type="string", nullable=true)
      */
     protected $JIRCode;
+
+    public function __construct()
+    {
+        $this->articleCalculations = new ArrayCollection();
+    }
+
+    public function setOperatorLabel(string $label)
+    {
+        $this->operatorLabel = $label;
+    }
+
+    public function setOperatorName(string $name)
+    {
+        $this->operatorName = $name;
+    }
+
+    public function setOperatorOib(string $oib)
+    {
+        $this->operatorOIB = $oib;
+    }
+
+    public function setPaymentType(string $type)
+    {
+        $this->paymentType = $type;
+    }
 }

@@ -7,7 +7,7 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\PercentType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use AppBundle\Form\Model\Invoice\Article;
 use Symfony\Component\Form\FormEvent;
@@ -17,24 +17,31 @@ class ArticleType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $allArticles = $options['allArticles'];
+
         $builder
-             ->add('article', EntityType::class, [
-                'class' => 'IssueInvoices\Domain\Model\Administration\Article',
-                'choice_label' => function ($article) {
-                    return $article->getName();
+             ->add('article', ChoiceType::class, [
+                'choices' => $allArticles,
+                'choice_label' => function($article, $key, $index) {
+                    return strtoupper($article->getName());
                 },
+                'choice_value' => 'id',
                 'expanded' => false,
                 'multiple' => false,
-                'label' => 'Artikl: '
+                'label' => 'Artikl: ',
+                'attr' => ['class' => 'article-choice']
             ])
             ->add('totalPrice', MoneyType::class, [
                 'currency' => 'HRK',
-                'label' => 'Cijena'
+                'label' => 'Cijena',
+                'data' => $allArticles[0]->getTotalPrice(),
+                'attr' => ['class' => 'price']
             ])
             ->add('taxRate', PercentType::class, [
                 'label' => 'PDV',
                 'type' => 'integer',
-                'disabled' => true
+                'data' => $allArticles[0]->getTaxRate(),
+                'attr' => ['class' => 'tax']
             ])
             ->add('quantity', IntegerType::class, [
                 'label' => 'Količina',
@@ -42,7 +49,8 @@ class ArticleType extends AbstractType
             ])
             ->add('discount', PercentType::class, [
                 'label' => 'Popust',
-                'type' => 'integer'
+                'type' => 'integer',
+                'required' => false
             ])
         ; 
     }
@@ -51,7 +59,8 @@ class ArticleType extends AbstractType
 	{
 	    $resolver->setDefaults(array(
 	    	'method' => 'post',
-	        'data_class' => Article::class
+	        'data_class' => Article::class,
+            'allArticles' => null
 	    ));
 	}
 }

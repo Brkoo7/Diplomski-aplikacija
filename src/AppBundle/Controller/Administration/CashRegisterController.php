@@ -46,7 +46,7 @@ class CashRegisterController extends Controller
             $entityManager = $this->getDoctrine()->getManager();
 
             $cashRegister = new CashRegister(
-                $formCashRegister->label
+                $formCashRegister->number
             );
             $office = $formCashRegister->office;
             $cashRegister->setOffice($office);
@@ -72,7 +72,7 @@ class CashRegisterController extends Controller
         // Nađi naplatni uređaj za poslani slug
         $cashRegister = $this->get('app.cashRegister_repository')->find($cashRegisterId);
 
-        $formCashRegister->label = $cashRegister->getLabel();
+        $formCashRegister->number = $cashRegister->getNumber();
 
         $form = $this->createForm(
             CashRegisterType::class,
@@ -86,7 +86,7 @@ class CashRegisterController extends Controller
             $formCashRegister = $form->getData();
             $entityManager = $this->getDoctrine()->getManager();
             
-            $cashRegister->setLabel($formCashRegister->label);
+            $cashRegister->setNumber($formCashRegister->number);
 
             $entityManager->persist($cashRegister);
             $entityManager->flush();

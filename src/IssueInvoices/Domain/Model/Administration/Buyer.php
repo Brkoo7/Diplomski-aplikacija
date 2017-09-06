@@ -125,4 +125,9 @@ class Buyer
     {
         return $this->pdvID;
     }
+
+    public function getAdministration()
+    {
+        return $this->administration;
+    }
 }

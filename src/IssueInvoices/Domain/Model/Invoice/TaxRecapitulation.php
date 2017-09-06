@@ -3,6 +3,7 @@ namespace IssueInvoices\Domain\Model\Invoice;
 
 use Doctrine\ORM\Mapping as ORM;
 
+
 /**
  * @ORM\Entity
  * @ORM\Table(name="invoice_tax_recapitulation")
@@ -33,27 +34,22 @@ class TaxRecapitulation
 
     /**
      * @var BaseInvoice
-     * @ORM\ManyToOne(targetEntity="BaseInvoice", inversedBy="taxRecapitulations)
+     * @ORM\ManyToOne(targetEntity="VATInvoice", inversedBy="taxRecapitulations")
      */
     private $invoice;
+
+    public function __construct(
+        float $taxRate, 
+        float $baseAmount, 
+        float $taxAmount
+    ) {
+        $this->taxRate = $taxRate;
+        $this->baseAmount = $baseAmount;
+        $this->taxAmount = $taxAmount;
+    }
 
     public function setInvoice(BaseInvoice $invoice)
     {
         $this->invoice = $invoice;
-    }
-
-    public function setTaxRate(float $taxRate)
-    {
-        $this->taxRate = $taxRate;
-    }
-
-    public function setBaseAmount(float $baseAmount)
-    {
-        $this->baseAmount = $baseAmount;
-    }
-
-    public function setTaxAmount(float $taxAmount)
-    {
-        $this->taxAmount = $taxAmount;
     }
 }

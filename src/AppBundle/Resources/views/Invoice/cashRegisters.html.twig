@@ -1,0 +1,9 @@
+{% if cashRegisters is empty %}
+	<option>Potrebno unijeti naplatne uređaje</option>
+{% else %}
+	{% for cashRegister in cashRegisters %}
+    	<option value="{{cashRegister.id}}">{{cashRegister.label}}</option>
+	{% endfor %}
+{% endif %}
+
+

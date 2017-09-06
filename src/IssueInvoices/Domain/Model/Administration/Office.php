@@ -49,7 +49,7 @@ class Office
      * Naplatni uređaji (blagajne)
      *
      * @var CashRegister[]
-     * @ORM\OneToMany(targetEntity="CashRegister", mappedBy="office")
+     * @ORM\OneToMany(targetEntity="CashRegister", mappedBy="office", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     private $cashRegisters;
 

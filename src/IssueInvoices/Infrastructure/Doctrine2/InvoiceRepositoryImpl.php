@@ -6,6 +6,9 @@ use Doctrine\ORM\EntityRepository;
 
 class InvoiceRepositoryImpl extends EntityRepository implements InvoiceRepository
 {
-	
+	public function findMaxOrdinalNumberForCombination(string $officeLabel, int $cashRegisterNumber): int
+	{
+
+	}
 }
 

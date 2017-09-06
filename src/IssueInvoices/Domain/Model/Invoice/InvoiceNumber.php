@@ -40,15 +40,15 @@ class InvoiceNumber
     /**
      * Oznaka naplatnog uređaja.
      *
-     * @var string
-     * @ORM\Column(name="cash_register", type="string")
+     * @var int
+     * @ORM\Column(type="integer")
      */
     private $cashRegister;
 
-    public function __construct(int $ordinal, string $office, string $cashRegister) 
+    public function __construct(int $ordinal, string $officeLabel, int $cashRegisterNumber) 
     {
         $this->ordinal = $ordinal;
-        $this->office = $office;
-        $this->cashRegister = $cashRegister;
+        $this->office = $officeLabel;
+        $this->cashRegister = $cashRegisterNumber;
     }
 }

@@ -3,7 +3,6 @@ namespace IssueInvoices\Domain\Model\Invoice;
 
 use Doctrine\ORM\Mapping as ORM;
 use DateTime;
-use Doctrine\Common\Collections\ArrayCollection;
 use IssueInvoices\Domain\Model\User\User;
 
 /**
@@ -82,15 +81,39 @@ abstract class BaseInvoice
      */
     protected $user;
 
-    public function __construct()
-    {
-        $this->articleCalculations = new ArrayCollection();
-    }
-
     public function addArticleCalculation(ArticleCalculation $articleCalculation)
     {
+        $articleCalculation->setInvoice($this);
         $this->articleCalculations->add($articleCalculation);
     }
 
+    public function setIssueDate(DateTime $issueDate)
+    {
+        $this->issueDate = $issueDate;
+    }
 
+    public function setIssuePlace(string $issuePlace)
+    {
+        $this->issuePlace = $issuePlace;
+    }
+
+    public function setBuyer(Buyer $buyer)
+    {
+        $this->buyer = $buyer;
+    }
+
+    public function setSeller(Seller $seller)
+    {
+        $this->seller = $seller;
+    }
+
+    public function getArticleCalculations()
+    {
+        return $this->articleCalculations;
+    }
+
+    public function setTotalAmount(float $totalAmount)
+    {
+        $this->totalAmount = $totalAmount;
+    }
 }

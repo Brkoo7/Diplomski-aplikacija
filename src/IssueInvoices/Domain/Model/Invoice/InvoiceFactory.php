@@ -1,124 +1,201 @@
 <?php
 namespace IssueInvoices\Domain\Model\Invoice;
 
+use IssueInvoices\Domain\Service\InvoiceNumberGenerator;
+
 class InvoiceFactory
 {
-	public function __construct() 
+	private $invoiceNumberGenerator;
+
+    public function __construct(InvoiceNumberGenerator $invoiceNumberGenerator) 
 	{
-		// Injectati servis generator broja racuna
+		$this->invoiceNumberGenerator = $invoiceNumberGenerator;
 	}
 
-    public function createFromData($data, $administration)
+    public function createFromData($data, $administration): BaseInvoice
     {
     	// Treba saznati da li je prodavatelj u sustavu PDV-a
-    	$isInVatSystem = $administration->getSeller()->isInVatSystem();
+        $seller = $administration->getSeller();
+        $isInVatSystem = $seller->isInVatSystem();
 
     	if ($isInVatSystem) {
     		// Izdajemo fiskalni racun s PDV-om
-    		$invoice = new Invoice();
+    		$invoice = new VATInvoice();
 
-    		$this->addBasicMandatoryInfo($invoice, $data);
-
-    		// Izracunamo kalkulaciju racuna
-    		// Prolazimo kroz kalkulaciju artikala
-    		$invoiceTotalAmount = 0;
-    		foreach ($invoice->getArticleCalculations() as $articleCalculation) {
-    			$invoiceTotalAmount += $articleCalculation->getTotal();
-    		}
-    		$invoice->setTotalPrice($invoiceTotalAmount);
+    		$this->addBasicMandatoryInfo($invoice, $data, $seller);
+        
+            // Izracunamo kalkulaciju računa
+            $this->doInvoiceCalculation($invoice, $isInVatSystem);
+            
+            // Izracunamo rekapitulaciju poreza
+            $this->calculateTaxRecapitulation($invoice);
     		
     	} else {
     		// Izdajemo fiskalni racun bez PDV-a
-    		$invoice = new VATInvoice();
+    		$invoice = new Invoice();
 
-    		$this->addBasicMandatoryInfo($invoice, $data);
+    		$this->addBasicMandatoryInfo($invoice, $data, $seller);
 
-    		// Izracunamo kalkulaciju racuna
-    		// Izracunamo por. osnovicu, porez, te ukupan iznos
-    		// Izracunamo rekapitulaciju poreza
-    		$this->addTaxRecapitulations($invoice, $invoice->articleCalculations());
-    		
+            // Izracunamo kalkulaciju računa
+            $this->doInvoiceCalculation($invoice, $isInVatSystem);
     	}
+
+        return $invoice;
     }
 
-    private function addBasicMandatoryInfo(BaseInvoice $invoice, $data)
+    private function addBasicMandatoryInfo(BaseInvoice $invoice, $data, $seller)
     {
-    	$invoice->setIssueDate((new DateTime())->now());
-    	$invoice->setIssuePlace('Split');
+    	$invoice->setIssueDate((new \DateTime()));
+    	$invoice->setIssuePlace($data->office->getCity());
 
     	$this->addBuyerInfo($invoice, $data->buyer);
-    	$this->addSellerInfo($invoice, $administration->getSeller());
+    	$this->addSellerInfo($invoice, $seller);
     	$this->addArticlesCalculations($invoice, $data->articles);
-
     	$this->addFiscalInfo($invoice, $data);
-    }
-
-    private function addArticlesCalculations(
-    	BaseInvoice $invoice, 
-    	array $articles
-    )
-    {
-    	foreach ($articles as $article) {
-    		$articleCalculation = new ArticleCalculation(
-    			$article->name,
-    			$article->unitPrice,
-    			$article->quantity,
-    			$article->discount,
-    			$baseInvoice
-    		);
-
-			$articleCalculation->setTotal(
-    			$article->unitPrice * $article->quantity * $article->discount
-    		);
-
-    		$articleCalculation->setTaxRate($article->taxRate);
-
-    		$invoice->addArticleCalculation($articleCalculation);
-    	}
     }
 
     private function addBuyerInfo(BaseInvoice $invoice, $buyerData)
     {
+        $buyer = new Buyer(
+            $buyerData->getName(),
+            $buyerData->getAddress(),
+            $buyerData->getOib()
+        );
 
+        if ($pdvId = $buyerData->getPdvId()) {
+            $buyer->setPdvId($pdvId);
+        }
+        $invoice->setBuyer($buyer);
     }
 
     private function addSellerInfo(BaseInvoice $invoice, $sellerData)
     {
+        $seller = new Seller(
+            $sellerData->getCompanyName(),
+            $sellerData->getPersonName(),
+            $sellerData->getOib(),
+            $sellerData->getStreet(),
+            $sellerData->getPostalCode(),
+            $sellerData->getCity()
+        );
 
+        if ($pdvId = $sellerData->getPdvId()) {
+            $seller->setPdvId($pdvId);
+        }
+
+        if ($phoneNumber = $sellerData->getPhoneNumber()) {
+            $seller->setPhoneNumber($phoneNumber);
+        }
+
+        if ($email = $sellerData->getEmail()) {
+            $seller->setEmail($email);
+        }
+
+        $invoice->setSeller($seller);
     }
+
+    private function addArticlesCalculations(
+        BaseInvoice $invoice, 
+        array $articles
+    ) {
+        foreach ($articles as $article) {
+            $articleCalculation = new ArticleCalculation(
+                $article->article->getName(),
+                $article->totalPrice,
+                $article->quantity
+            );
+
+            if ($discount = $article->discount) {
+                $articleCalculation->setDiscount($discount);
+            }
+
+            if ($taxRate = $article->taxRate) {
+                $articleCalculation->setTaxRate($taxRate);
+            }
+
+            // Izracunati jednu kalkulaciju
+            $total = $articleCalculation->getUnitPrice() 
+                * $articleCalculation->getQuantity();
+
+            if ($discount) {
+                $total *= $discount;
+            }
+
+            $articleCalculation->setTotal($total);
+
+            $articleCalculation->setInvoice($invoice);
+            $invoice->addArticleCalculation($articleCalculation);
+        }
+    }
+
 
     private function addFiscalInfo(BaseInvoice $invoice, $data)
     {
-    	// Pozvati domenski servis za generiranje broja racuna
-    	// dohvatiti
-    	// $this->invoiceNumberGeneratorService($data->office->getLabel(), $data->operator->getLabel())
-    	// Dobit cemo $invoiceNumber['ordinal':
-    	// 			   'officeLabel'
-    	// 			   'operatorLabel'
-    	// 			  ]
+        $invoice->setOperatorName($data->operator->getName());
+        $invoice->setOperatorLabel($data->operator->getLabel());
+    	$invoice->setOperatorOib($data->operator->getOib());
+        $invoice->setPaymentType($data->paymentType->name());
 
-    	// $invoiceNumber = new InvoiceNumber($invoiceNumber['ordinal'], 
-    	// $invoiceNUmber['officeLabel'], $invoiceNumber['operatorLabel']);
+        $officeLabel = $data->office->getLabel();
+        $cashRegisterNumber = $data->cashRegister->getNumber();
 
-    	// $invoice->setNumber($invoiceNumber);
-    	// $invoice->setOperatorName($data->operator->getName());
-    	// $invoice->setOperatorOib($data->operator->getOib());
-    	// $invoice->setPaymentType($data->paymentType);
-    	// $invoice->setZKICode(414141414214);
-    	// $invoice->setJIRCode(1241241241414);
+        // $ordinalNumber = $this->invoiceNumberGenerator->calculateOrdinalNumber($officeLabel, $cashRegisterNumber);
+
+        // $invoiceNumber = new InvoiceNumber($ordinalNumber, $officeLabel, $cashRegisterNumber);
+
+        // $invoice->setNumber($invoiceNumber);
     }
 
-    private function addTaxRecapitulation(BaseInvoice $invoice, array $articleCalculations)
+    private function calculateTaxRecapitulation(BaseInvoice $invoice)
     {
-    	$baseAmount;
-    	$taxAmount;
-    	$totalAmount;
-    	foreach ($articleCalculations as $calculation) {
-    		// Pronaci koliki je PDV artikla
-    		// Spremiti u niz $taxRecapitulation[$rate][] = $calculation->getTotal()
+    	$totalBaseAmount = 0;
+    	$totalTaxAmount = 0;
+    	$totalInvoiceAmount = 0;
+        $taxRecapitulations = [];
+
+    	foreach ($invoice->getArticleCalculations() as $articleCalculation) {
+            $tax = $articleCalculation->getTaxRate();
+    		$taxRecapitulations[$tax][] = $articleCalculation->getTotal();
     	}
 
-    	// Izracunati totalamount, Proci kroz svaki $taxRecapitulation[$rate][]
-    	// $invoice->addTaxRecapitulation($taxRecapitulation)
+        foreach ($taxRecapitulations as $taxRate => $totalAmounts) {
+            $totalAmount = 0;
+            foreach ($totalAmounts as $amount) {
+                $totalAmount += $amount;
+            }
+
+            $baseAmount = $taxRate * $totalAmount;
+            $totalBaseAmount += $baseAmount;
+
+            $taxAmount = $totalAmount - $baseAmount;
+            $totalTaxAmount += $taxAmount;
+
+            $taxRecapitulation = new TaxRecapitulation((float) $taxRate, $baseAmount, $taxAmount);
+            $invoice->addTaxRecapitulation($taxRecapitulation);
+        }
+
+        $invoice->setBaseAmount($totalBaseAmount);
+        $invoice->setTaxAmount($totalTaxAmount);
+        $invoice->setTotalAmount(($totalBaseAmount + $totalTaxAmount));
+    }
+
+    private function doInvoiceCalculation(BaseInvoice $invoice, bool $isInVatSystem)
+    {
+        $totalAmount = 0;
+        $baseAmount = 0;
+        $taxAmount = 0;
+
+        foreach ($invoice->getArticleCalculations() as $articleCalculation) {
+            $taxRate = $articleCalculation->getTaxRate();
+            $totalAmount += $articleCalculation->getTotal();
+            $baseAmount += ($totalAmount * $taxRate);
+            $taxAmount += ($totalAmount - $baseAmount);
+        }
+
+        $invoice->setTotalAmount($totalAmount);
+        if ($isInVatSystem) {
+            $invoice->setBaseAmount($baseAmount);
+            $invoice->setTaxAmount($taxAmount);
+        }
     }
 }

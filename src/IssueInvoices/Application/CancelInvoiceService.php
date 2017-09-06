@@ -39,3 +39,4 @@ class CancelInvoiceService
 		// $cancelInvoice = $this->cancelInvoiceService($invoice);
 		// Sprema storno racun
 	}
+}

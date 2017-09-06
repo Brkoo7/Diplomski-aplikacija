@@ -12,6 +12,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use AppBundle\Form\Model\Invoice\Invoice;
 use IssueInvoices\Domain\Model\Invoice\PaymentType;
+use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
 
 class InvoiceType extends AbstractType
 {
@@ -20,12 +21,21 @@ class InvoiceType extends AbstractType
         $buyers = $options['buyers'];
         $operators = $options['operators'];
         $offices = $options['offices'];
+        $allArticles = $options['allArticles'];
+        $cashRegisters = [];
+
+        foreach ($offices as $office) {
+            foreach ($office->getCashRegisters() as $cashRegister) {
+                $cashRegisters[] = $cashRegister;
+            }
+        }
+
         $paymentTypes = [
             new PaymentType('CASH'),
             new PaymentType('CREDIT_CARD'),
             new PaymentType('TRANSACTION_ACCOUNT'),
             new PaymentType('OTHER')
-            ];
+        ];
 
         $builder
             ->add('buyer', ChoiceType::class, [
@@ -42,14 +52,18 @@ class InvoiceType extends AbstractType
                 'choice_label' => function($office, $key, $index) {
                     return strtoupper($office->getLabel());
                 },
+                'choice_value' => 'id',
                 'expanded' => false,
                 'multiple' => false,
                 'label' => 'Poslovni prostor: '
             ])
-            ->add('cashRegister', EntityType::class, [
-                'class' => 'IssueInvoices\Domain\Model\Administration\CashRegister',
-                'choice_label' => function ($cashRegister) {
-                    return $cashRegister->getLabel();
+            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+                dump($event);
+            })
+            ->add('cashRegister', ChoiceType::class, [
+                'choices' => $cashRegisters,
+                'choice_label' => function($cashRegister, $key, $index) {
+                    return strtoupper($cashRegister->getNumber());
                 },
                 'expanded' => false,
                 'multiple' => false,
@@ -80,19 +94,25 @@ class InvoiceType extends AbstractType
                 'entry_options' => ['label' => false],
                 'allow_add' => true,
                 'allow_delete' => true,
-                'by_reference' => false
+                'by_reference' => false,
+                'entry_options'  =>
+                [
+                    'allArticles'  => $allArticles
+                ]
             ])
         ;
     }
 
-	public function configureOptions(OptionsResolver $resolver)
-	{
-	    $resolver->setDefaults(array(
-	    	'method' => 'post',
-	        'data_class' => Invoice::class,
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults(array(
+            'method' => 'post',
+            'data_class' => Invoice::class,
             'buyers' => null,
             'operators' => null,
-            'offices' => null
-	    ));
-	}
+            'offices' => null,
+            'allArticles' => null,
+            'csrf_protection' => false,
+        ));
+    }
 }
