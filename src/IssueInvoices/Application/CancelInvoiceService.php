@@ -2,7 +2,9 @@
 namespace IssueInvoices\Application;
 
 use IssueInvoices\Domain\Model\Invoice\InvoiceRepository;
-use IssueInvoices\Domain\Service\CancelInvoiceService as CancelInvoiceDomainService;
+use IssueInvoices\Domain\Model\Invoice\InvoiceFactory;
+use IssueInvoices\Domain\Model\Invoice\CancelInvoiceException;
+use InvalidArgumentException;
 
 /**
  * Aplikacijski servis - USE CASE - storniraj mi taj i taj račun
@@ -11,17 +13,17 @@ class CancelInvoiceService
 {
 	private $entityManager;
 	private $invoiceRepository;
-	private $cancelInvoiceService;
+	private $invoiceFactory;
 
 	public function __construct(
 		$entityManager, 
 		InvoiceRepository $invoiceRepository,
-		CancelInvoiceDomainService $cancelInvoiceService
+		InvoiceFactory $invoiceFactory
 	)
 	{
 		$this->entityManager = $entityManager;
 		$this->invoiceRepository = $invoiceRepository;
-		$this->cancelInvoiceService = $cancelInvoiceService;
+		$this->invoiceFactory = $invoiceFactory;
 	}
 
 	/**
@@ -29,14 +31,27 @@ class CancelInvoiceService
 	 *
 	 * @param int $invoiceId - identifikator originalnog racuna kojeg treba stornirati
 	 *
-	 * @throws Exception ako dođe do greške tijekom spremanja
+	 * @throws CancelInvoiceException ako se probaju stornirati već stornirani racuni ili storno racuni
+	 * @throws InvalidArgumentException ako račun nije pronađen u bazi
 	 */
 	public function cancelInvoice(int $invoiceId)
 	{
-		// Pronalazi orig. racun po id-u
-		// $invoice = findById($invoiceId)
-		// Poziva domenski servis koji sadrži poslovnu logiku kreiranja storno racuna
-		// $cancelInvoice = $this->cancelInvoiceService($invoice);
-		// Sprema storno racun
+		$invoice = $this->invoiceRepository->find($invoiceId);
+
+		if (!$invoice) {
+			throw new InvalidArgumentException(sprintf('Račun "%s" nije pronađen', $invoiceId));
+		}
+		if ($invoice->isCancelled()) {
+			throw CancelInvoiceException::invoiceAlreadyCancelled();
+		}
+		if ($invoice->isCancel()) {
+			throw CancelInvoiceException::invoiceIsCancel();
+		}
+
+		$invoice->cancel();
+		$cancelInvoice = $this->invoiceFactory->createCancelFromOriginalInvoice($invoice);
+		$this->entityManager->persist($cancelInvoice);
+		$this->entityManager->persist($invoice);
+		$this->entityManager->flush();
 	}
 }

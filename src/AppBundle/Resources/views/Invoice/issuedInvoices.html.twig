@@ -28,13 +28,28 @@
                         <th>Datum izdavanja</th>
                         <th>Ukupni iznos</th>
                         <th>Operater</th>
-                        <th>Status računa</th>
                         <th>Način plaćanja</th>
+                        <th>Status</th>
                         <th>Opcije</th>
                     </tr>
                 </thead>
                 <tbody>
-                    
+                    {% for invoice in invoices %}
+                        <tr>
+                            <td>{{loop.index}}</td>
+                            <td>{{invoice.number.ordinal}}-{{invoice.number.office}}-{{invoice.number.cashRegister}}</td>
+                            <td>{{invoice.issueDate | date("m/d/Y")}}</td>
+                            <td>{{invoice.totalAmount | number_format(2, '.', ',')}} HRK
+                            </td>
+                            <td>{{ invoice.operatorName }}</td>
+                            <td>{{ invoice.paymentType.titleName }}</td>
+                            <td>{{ invoiceStatus(invoice) }}</td>
+                            <td>
+                                <a href="{{ path('AppBundle_Invoices_cancelInvoice', {'invoiceId': invoice.id})}}"> <button type="button" class="btn btn-xs btn-primary" {{isDisabled(invoice)}}>Storniraj</button></a>
+                                <a href="{{ path('AppBundle_Invoice_viewInvoice', {'invoiceId': invoice.id})}}"> <button type="button" class="btn btn-xs btn-info">Pogledaj</button></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </ul>

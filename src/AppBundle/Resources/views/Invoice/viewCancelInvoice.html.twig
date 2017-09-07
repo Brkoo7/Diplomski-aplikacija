@@ -1,0 +1,152 @@
+{% extends 'base.html.twig' %}
+
+{% if hasInvoiceVAT(invoice) %}
+    {% set taxAmountTr %}
+        <tr>
+            <td class="no-line"></td>
+            <td class="no-line"></td>
+            <td class="no-line"></td>
+            <td class="no-line"></td>
+            <td class="no-line text-center"><strong>PDV</strong></td>
+            <td class="no-line text-right">-{{invoice.relatedInvoice.taxAmount | number_format(2, '.', ',')}} KN</td>
+        </tr>
+    {% endset %}
+
+    {% set taxRecapitulationDiv %}
+        <div class="col-xs-6">
+            <table class="table table-condensed">
+                <strong>Rekapitulacija poreza:</strong><br>
+                <thead>
+                    <tr>
+                        <td class="text-center"><strong>Stopa poreza</strong></td>
+                        <td class="text-center"><strong>Osnovica</strong></td>
+                        <td class="text-center"><strong>Iznos poreza</strong></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for taxRecapitulation in invoice.relatedInvoice.taxRecapitulations %}
+                        <tr>
+                            <td class="text-center">{{taxRecapitulation.taxRate}} %</td>
+                            <td class="text-center">-{{taxRecapitulation.baseAmount | number_format(2, '.', ',')}}</td>
+                            <td class="text-center">-{{taxRecapitulation.taxAmount | number_format(2, '.', ',')}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endset %}
+{% else %}
+    {% set taxRecapitulationDiv %}
+    {% endset %}
+
+    {% set taxAmountTr %}
+    {% endset %}
+{% endif %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="invoice-title">
+                <h4>
+                    Račun broj: <strong>{{invoice.number.ordinal}}-{{invoice.number.office}}-{{invoice.number.cashRegister}}</strong>
+                </h4>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-xs-6">
+                    <address>
+                    <strong>Prodavatelj:</strong><br>
+                        {{invoice.relatedInvoice.seller.companyName}}<br>
+                        Vlasnik: {{invoice.relatedInvoice.seller.personName}}<br>
+                        OIB: {{invoice.relatedInvoice.seller.oib}}<br>
+                        {{invoice.relatedInvoice.seller.street}}<br>
+                        {{invoice.relatedInvoice.seller.postalCode}}, {{invoice.relatedInvoice.seller.city}}<br>
+                        {{invoice.relatedInvoice.seller.phoneNumber}}<br>
+                        {{invoice.relatedInvoice.seller.email}}<br>
+                    </address>
+                </div>
+                <div class="col-xs-6 text-right">
+                    <address>
+                    <strong>Kupac:</strong><br>
+                        {{invoice.relatedInvoice.buyer.name}}<br>
+                        OIB: {{invoice.relatedInvoice.buyer.oib}}<br>
+                        {{invoice.relatedInvoice.buyer.address}}<br>
+                    </address>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6">
+                    <address>
+                        Operater: {{invoice.operatorName}}<br>
+                        Način plaćanja: {{invoice.paymentType.titleName}}<br>
+                    </address>
+                </div>
+                <div class="col-xs-6 text-right">
+                    <address>
+                        Mjesto isporuke: {{invoice.relatedInvoice.issuePlace}}<br>
+                        Datum i vrijeme: {{invoice.issueDate | date("m/d/Y H:i:s")}}<br>
+                    </address>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><strong>Pregled računa</strong></h3>
+                </div>
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table class="table table-condensed">
+                            <thead>
+                                <tr>
+                                    <td><strong>Redni broj</strong></td>
+                                    <td class="text-center"><strong>Naziv</strong></td>
+                                    <td class="text-center"><strong>Jedinična cijena</strong></td>
+                                    <td class="text-center"><strong>Količina</strong></td>
+                                    {# Treba saznati da li ima popusta #}
+                                    <td class="text-right"><strong>Popust</strong></td>
+                                    <td class="text-right"><strong>Iznos</strong></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for article in invoice.relatedInvoice.articleCalculations %}
+                                    <tr>
+                                        <td>{{loop.index}}</td>
+                                        <td class="text-center">{{article.name}}</td>
+                                        <td class="text-center">-{{article.unitPrice}} KN</td>
+                                        <td class="text-right">-{{article.quantity}}</td>
+                                        <td class="text-right">{{article.discount}} %</td>
+                                        <td class="text-right">{{article.total | number_format(2, '.', ',')}} KN</td>
+                                    </tr>
+                                {% endfor %}
+                                <tr>
+                                    <td class="thick-line"></td>
+                                    <td class="thick-line"></td>
+                                    <td class="thick-line"></td>
+                                    <td class="thick-line"></td>
+                                    <td class="thick-line text-center"><strong>Osnovica</strong></td>
+                                    <td class="thick-line text-right">-{{invoice.relatedInvoice.baseAmount | number_format(2, '.', ',')}} KN</td>
+                                </tr>
+                                {{taxAmountTr}}
+                                <tr>
+                                    <td class="no-line"></td>
+                                    <td class="no-line"></td>
+                                    <td class="no-line"></td>
+                                    <td class="no-line"></td>
+                                    <td class="no-line text-center"><strong>Ukupno</strong></td>
+                                    <td class="no-line text-right">-{{invoice.relatedInvoice.totalAmount | number_format(2, '.', ',')}} KN</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        {{taxRecapitulationDiv}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

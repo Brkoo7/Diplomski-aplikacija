@@ -5,17 +5,13 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
+ * Fiskalni račun s PDV-om
  * @ORM\Entity
  */
 class VATInvoice extends Invoice
 {
-	/*
-     * @ORM\Column(name="base_amount", type="float")
-     */
-    protected $baseAmount;
-
-    /*
-     * @ORM\Column(name="tax_amount", type="float")
+    /** 
+     * @ORM\Column(type="float")
      */
     protected $taxAmount;
 
@@ -31,11 +27,6 @@ class VATInvoice extends Invoice
         $this->articleCalculations = new ArrayCollection();
     }
 
-    public function setBaseAmount(float $baseAmount) 
-    {
-        $this->baseAmount = $baseAmount;
-    }
-
     public function setTaxAmount(float $taxAmount)
     {
         $this->taxAmount = $taxAmount;
@@ -43,6 +34,17 @@ class VATInvoice extends Invoice
 
     public function addTaxRecapitulation(TaxRecapitulation $taxRecapitulation)
     {
+        $taxRecapitulation->setInvoice($this);
         $this->taxRecapitulations->add($taxRecapitulation);
+    }
+
+    public function getTaxAmount()
+    {
+        return $this->taxAmount;
+    }
+
+    public function getTaxRecapitulations()
+    {
+        return $this->taxRecapitulations;
     }
 }

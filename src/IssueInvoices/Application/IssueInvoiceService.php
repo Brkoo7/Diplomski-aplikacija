@@ -31,7 +31,6 @@ class IssueInvoiceService
 	public function issueInvoice($formInvoice, $administration)
 	{
 		$invoice = $this->invoiceFactory->createFromData($formInvoice, $administration);
-
 		$this->entityManager->persist($invoice);
 		$this->entityManager->flush();
 	}

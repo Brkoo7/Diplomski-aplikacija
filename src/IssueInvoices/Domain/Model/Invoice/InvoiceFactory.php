@@ -6,15 +6,17 @@ use IssueInvoices\Domain\Service\InvoiceNumberGenerator;
 class InvoiceFactory
 {
 	private $invoiceNumberGenerator;
+    private $securityToken;
 
-    public function __construct(InvoiceNumberGenerator $invoiceNumberGenerator) 
+    public function __construct(InvoiceNumberGenerator $invoiceNumberGenerator, $securityToken) 
 	{
 		$this->invoiceNumberGenerator = $invoiceNumberGenerator;
+        $this->securityToken = $securityToken;
 	}
 
     public function createFromData($data, $administration): BaseInvoice
     {
-    	// Treba saznati da li je prodavatelj u sustavu PDV-a
+        // Treba saznati da li je prodavatelj u sustavu PDV-a
         $seller = $administration->getSeller();
         $isInVatSystem = $seller->isInVatSystem();
 
@@ -40,7 +42,44 @@ class InvoiceFactory
             $this->doInvoiceCalculation($invoice, $isInVatSystem);
     	}
 
+        $invoice->setUser($this->securityToken->getToken()->getUser());
+
         return $invoice;
+    }
+
+    public function createCancelFromOriginalInvoice(BaseInvoice $invoice): CancelInvoice
+    {
+        $cancelInvoice = new CancelInvoice();
+        $cancelInvoice->setRelatedInvoice($invoice);
+
+        $cancelInvoice->setIssueDate((new \DateTime()));
+        $cancelInvoice->setIssuePlace($invoice->getIssuePlace());
+
+        // Pridjeljivanje podataka trenutnog operatera
+        $cancelInvoice->setOperatorLabel('NOVI');
+        $cancelInvoice->setOperatorName('NOVI');
+        $cancelInvoice->setOperatorOib('523523523523532523');
+
+        $cancelInvoice->setBaseAmount(-($invoice->getBaseAmount()));
+        $cancelInvoice->setTotalAmount(-($invoice->getTotalAmount()));
+
+        if ($invoice instanceOf VATInvoice) {
+            $cancelInvoice->setTaxAmount(-($invoice->getTaxAmount()));
+        }
+        $cancelInvoice->setPaymentType($invoice->getPaymentType());
+        
+        // Generiranje broja računa
+        $officeLabel = $invoice->getNumber()->getOffice();
+        $cashRegisterNumber = $invoice->getNumber()->getCashRegister();
+
+        $cancelInvoice->setNumber(
+            $this->generateInvoiceNumber($officeLabel, $cashRegisterNumber)
+        );
+
+        // Postaviti trenutnog korisnika
+        $cancelInvoice->setUser($this->securityToken->getToken()->getUser());
+
+        return $cancelInvoice;
     }
 
     private function addBasicMandatoryInfo(BaseInvoice $invoice, $data, $seller)
@@ -118,7 +157,8 @@ class InvoiceFactory
                 * $articleCalculation->getQuantity();
 
             if ($discount) {
-                $total *= $discount;
+                $totalDiscount = $total * ($discount/100);
+                $total = $total - $totalDiscount;
             }
 
             $articleCalculation->setTotal($total);
@@ -128,22 +168,45 @@ class InvoiceFactory
         }
     }
 
-
     private function addFiscalInfo(BaseInvoice $invoice, $data)
     {
-        $invoice->setOperatorName($data->operator->getName());
         $invoice->setOperatorLabel($data->operator->getLabel());
+        $invoice->setOperatorName($data->operator->getName());
     	$invoice->setOperatorOib($data->operator->getOib());
-        $invoice->setPaymentType($data->paymentType->name());
+        $invoice->setPaymentType(new PaymentType($data->paymentType));
 
         $officeLabel = $data->office->getLabel();
         $cashRegisterNumber = $data->cashRegister->getNumber();
+        $invoice->setNumber(
+            $this->generateInvoiceNumber($officeLabel, $cashRegisterNumber)
+        );
+    }
 
-        // $ordinalNumber = $this->invoiceNumberGenerator->calculateOrdinalNumber($officeLabel, $cashRegisterNumber);
+    private function doInvoiceCalculation(BaseInvoice $invoice, bool $isInVatSystem)
+    {
+        $invoiceTotalAmount = 0;
+        $invoiceBaseAmount = 0;
+        $invoiceTaxAmount = 0;
 
-        // $invoiceNumber = new InvoiceNumber($ordinalNumber, $officeLabel, $cashRegisterNumber);
+        foreach ($invoice->getArticleCalculations() as $articleCalculation) {
+            $articleTaxRate = $articleCalculation->getTaxRate();
+            $articleTotalAmount = $articleCalculation->getTotal();
+            $articleTaxAmount = $articleTotalAmount * ($articleTaxRate/100);
+            $articleBaseAmount = $articleTotalAmount - $articleTaxAmount;
 
-        // $invoice->setNumber($invoiceNumber);
+            $invoiceTotalAmount += $articleTotalAmount;
+            $invoiceBaseAmount += $articleBaseAmount;
+            $invoiceTaxAmount += $articleTaxAmount;
+        }
+
+        $invoice->setTotalAmount($invoiceTotalAmount);
+        if ($isInVatSystem) {
+            $invoice->setTaxAmount($invoiceTaxAmount);
+            $invoice->setBaseAmount($invoiceBaseAmount);
+        } else {
+            $invoice->setTotalAmount($invoiceTotalAmount);
+            $invoice->setBaseAmount($invoiceTotalAmount);
+        }
     }
 
     private function calculateTaxRecapitulation(BaseInvoice $invoice)
@@ -164,38 +227,17 @@ class InvoiceFactory
                 $totalAmount += $amount;
             }
 
-            $baseAmount = $taxRate * $totalAmount;
-            $totalBaseAmount += $baseAmount;
+            $taxAmount = $totalAmount * ($taxRate/100);
+            $baseAmount = $totalAmount - $taxAmount;
 
-            $taxAmount = $totalAmount - $baseAmount;
-            $totalTaxAmount += $taxAmount;
-
-            $taxRecapitulation = new TaxRecapitulation((float) $taxRate, $baseAmount, $taxAmount);
+            $taxRecapitulation = new TaxRecapitulation($taxRate, $baseAmount, $taxAmount);
             $invoice->addTaxRecapitulation($taxRecapitulation);
         }
-
-        $invoice->setBaseAmount($totalBaseAmount);
-        $invoice->setTaxAmount($totalTaxAmount);
-        $invoice->setTotalAmount(($totalBaseAmount + $totalTaxAmount));
     }
 
-    private function doInvoiceCalculation(BaseInvoice $invoice, bool $isInVatSystem)
+    private function generateInvoiceNumber(string $officeLabel, int $cashRegisterNumber): InvoiceNumber
     {
-        $totalAmount = 0;
-        $baseAmount = 0;
-        $taxAmount = 0;
-
-        foreach ($invoice->getArticleCalculations() as $articleCalculation) {
-            $taxRate = $articleCalculation->getTaxRate();
-            $totalAmount += $articleCalculation->getTotal();
-            $baseAmount += ($totalAmount * $taxRate);
-            $taxAmount += ($totalAmount - $baseAmount);
-        }
-
-        $invoice->setTotalAmount($totalAmount);
-        if ($isInVatSystem) {
-            $invoice->setBaseAmount($baseAmount);
-            $invoice->setTaxAmount($taxAmount);
-        }
+        $ordinalNumber = $this->invoiceNumberGenerator->calculateOrdinalNumber($officeLabel, $cashRegisterNumber);
+        return new InvoiceNumber($ordinalNumber, $officeLabel, $cashRegisterNumber);
     }
 }

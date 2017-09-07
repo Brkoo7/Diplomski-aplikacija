@@ -101,6 +101,11 @@ class ArticleCalculation
         $this->total = $total;
     }
 
+    public function getName()
+    {
+        return $this->name;
+    }
+
     public function getUnitPrice()
     {
         return $this->unitPrice;
@@ -119,5 +124,10 @@ class ArticleCalculation
     public function getTaxRate()
     {
         return $this->taxRate;
+    }
+
+    public function getDiscount()
+    {
+        return $this->discount;
     }
 }

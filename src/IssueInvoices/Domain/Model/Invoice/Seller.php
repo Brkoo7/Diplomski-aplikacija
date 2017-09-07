@@ -129,4 +129,49 @@ class Seller
     {
         $this->email = $email;
     }
+
+    public function getCompanyName()
+    {
+        return $this->companyName;
+    }
+
+    public function getPersonName()
+    {
+        return $this->personName;
+    }
+
+    public function getOib()
+    {
+        return $this->oib;
+    }
+
+    public function getPdvID()
+    {
+        return $this->pdvID;
+    }
+
+    public function getPhoneNumber()
+    {
+        return $this->phoneNumber;
+    }
+
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    public function getStreet()
+    {
+        return $this->street;
+    }
+
+    public function getPostalCode()
+    {
+        return $this->postalCode;
+    }
+
+    public function getCity()
+    {
+        return $this->city;
+    }
 }

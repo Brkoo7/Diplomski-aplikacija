@@ -89,4 +89,24 @@ class Buyer
     {
         $this->pdvID = $pdvID;
     }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    public function getOib()
+    {
+        return $this->oib;
+    }
+
+    public function getPdvId()
+    {
+        return $this->pdvId;
+    }
 }

@@ -11,8 +11,8 @@ use IssueInvoices\Domain\Model\User\User;
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="type", type="string")
  * @ORM\DiscriminatorMap({
- *  "ORDINAL" = "Invoice",
- *  "VAT" = "VATInvoice",
+ *  "FISCAL" = "Invoice",
+ *  "FISCAL_VAT" = "VATInvoice",
  *  "CANCEL" = "CancelInvoice"
  * })
  */
@@ -32,6 +32,24 @@ abstract class BaseInvoice
      * @ORM\Column(name="issue_date", type="datetime")
      */
     protected $issueDate;
+
+    /**
+     * Mjesto izdavanja.
+     *
+     * @var string
+     * @ORM\Column(name="issue_place", type="string")
+     */
+    protected $issuePlace;
+
+    /** 
+     * @ORM\Column(type="float")
+     */
+    protected $baseAmount;
+
+    /** 
+     * @ORM\Column(type="float")
+     */
+    protected $totalAmount;
 
     /**
      * Prodavatelj.
@@ -55,25 +73,10 @@ abstract class BaseInvoice
      */
     protected $articleCalculations;
 
-    /**
-     * Mjesto izdavanja.
-     *
-     * @var string
-     * @ORM\Column(name="issue_place", type="string")
-     */
-    protected $issuePlace;
-
-    /**
-     * Napomene.
-     *
-     * @ORM\Column(type="text", length=65535, nullable=true)
+    /** 
+     * @ORM\Column(type="string", nullable=true)
      */
     protected $notes;
-
-    /*
-     * @ORM\Column(name="total_amount", type="float")
-     */
-    protected $totalAmount;
 
     /**
      * @ORM\ManyToOne(targetEntity="IssueInvoices\Domain\Model\User\User", inversedBy="invoices")
@@ -81,12 +84,11 @@ abstract class BaseInvoice
      */
     protected $user;
 
-    public function addArticleCalculation(ArticleCalculation $articleCalculation)
-    {
-        $articleCalculation->setInvoice($this);
-        $this->articleCalculations->add($articleCalculation);
-    }
-
+    /** 
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    protected $isCancelled;
+    
     public function setIssueDate(DateTime $issueDate)
     {
         $this->issueDate = $issueDate;
@@ -97,6 +99,16 @@ abstract class BaseInvoice
         $this->issuePlace = $issuePlace;
     }
 
+    public function setBaseAmount(float $baseAmount) 
+    {
+        $this->baseAmount = $baseAmount;
+    }
+
+    public function setTotalAmount(float $totalAmount)
+    {
+        $this->totalAmount = $totalAmount;
+    }
+    
     public function setBuyer(Buyer $buyer)
     {
         $this->buyer = $buyer;
@@ -107,13 +119,92 @@ abstract class BaseInvoice
         $this->seller = $seller;
     }
 
+    public function addArticleCalculation(ArticleCalculation $articleCalculation)
+    {
+        $articleCalculation->setInvoice($this);
+        $this->articleCalculations->add($articleCalculation);
+    }
+
+    public function setUser($user) 
+    {
+        $this->user = $user;
+    }
+
+    public function cancel()
+    {
+        $this->isCancelled = true;
+    }
+    
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function getIssueDate()
+    {
+        return $this->issueDate;
+    }
+
+    public function getIssuePlace()
+    {
+        return $this->issuePlace;
+    }
+
+    public function getBaseAmount()
+    {
+        return $this->baseAmount;
+    }
+
+    public function getTotalAmount()
+    {
+        return $this->totalAmount;
+    }
+    
     public function getArticleCalculations()
     {
         return $this->articleCalculations;
     }
 
-    public function setTotalAmount(float $totalAmount)
+    public function getSeller()
     {
-        $this->totalAmount = $totalAmount;
+        return $this->seller;
+    }
+
+    public function getBuyer()
+    {
+        return $this->buyer;
+    }
+
+    /**
+     * Da li je račun storniran
+     * 
+     * @return bool|null
+     */
+    public function isCancelled()
+    {
+        return $this->isCancelled;
+    }
+
+    /**
+     * Da li se radi o storno računu
+     */
+    public function isCancel(): bool
+    {
+        if ($this instanceOf CancelInvoice) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function getType(): string
+    {
+        if ($this instanceOf CancelInvoice) {
+            return 'Storno račun';
+        } elseif ($this instanceOf VATInvoice) {
+            return 'Fiskalni s PDV-om';
+        } else {
+            return 'Fiskalni bez PDV-a';
+        }
     }
 }

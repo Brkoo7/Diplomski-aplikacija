@@ -5,6 +5,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
+ * Fiskalni račun bez PDV-a
+ * 
  * Obveznici fizkalizacije:
  * + fizičke osobe obveznici poreza na dohodak po osnovi samostalne djelatnosti prema odredbama Zakona o porezu na dohodak (obveznici vođenja poslovnih knjiga i „paušalisti“)
    + pravna i fizička osoba koja se smatra obveznikom poreza na dobit prema Zakonu o porezu na dobit za sve djelatnosti za koje je, prema odredbama posebnih propisa, obveznik izdavanja računa za isporuku dobra ili obavljene usluge.
@@ -15,14 +17,6 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class Invoice extends BaseInvoice
 {
-    /**
-     * Broj računa.
-     *
-     * @var Number
-     * @ORM\OneToOne(targetEntity="InvoiceNumber", cascade={"persist", "remove"}, orphanRemoval=true)
-     */
-    protected $number;
-
     /**
      * Oznaka operatera
      *
@@ -54,6 +48,14 @@ class Invoice extends BaseInvoice
      * @ORM\Column(type="string", length=30)
      */
     protected $paymentType;
+
+    /**
+     * Broj računa.
+     *
+     * @var Number
+     * @ORM\OneToOne(targetEntity="InvoiceNumber", cascade={"persist", "remove"}, orphanRemoval=true)
+     */
+    protected $number;
 
     /**
      * Zaštitni kod izdavatelja računa.
@@ -91,8 +93,28 @@ class Invoice extends BaseInvoice
         $this->operatorOIB = $oib;
     }
 
-    public function setPaymentType(string $type)
+    public function setPaymentType(PaymentType $type)
     {
-        $this->paymentType = $type;
+        $this->paymentType = $type->name();
+    }
+
+    public function setNumber(InvoiceNumber $number)
+    {
+        $this->number = $number;
+    }
+
+    public function getOperatorName(): string
+    {
+        return $this->operatorName;
+    }
+
+    public function getPaymentType(): PaymentType
+    {
+        return (new PaymentType($this->paymentType));
+    }
+
+    public function getNumber(): InvoiceNumber
+    {
+        return $this->number;
     }
 }

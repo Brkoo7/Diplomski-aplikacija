@@ -3,7 +3,6 @@ namespace IssueInvoices\Domain\Model\Invoice;
 
 use Doctrine\ORM\Mapping as ORM;
 
-
 /**
  * @ORM\Entity
  * @ORM\Table(name="invoice_tax_recapitulation")
@@ -17,17 +16,17 @@ class TaxRecapitulation
      */
     private $id;
 
-    /*
+    /** 
      * @ORM\Column(type="float")
      */
     private $taxRate;
 
-    /*
+    /** 
      * @ORM\Column(type="float")
      */
     private $baseAmount;
 
-    /*
+    /** 
      * @ORM\Column(type="float")
      */
     private $taxAmount;
@@ -51,5 +50,20 @@ class TaxRecapitulation
     public function setInvoice(BaseInvoice $invoice)
     {
         $this->invoice = $invoice;
+    }
+
+    public function getTaxRate()
+    {
+        return $this->taxRate;
+    }
+
+    public function getBaseAmount()
+    {
+        return $this->baseAmount;
+    }
+
+    public function getTaxAmount()
+    {
+        return $this->taxAmount;
     }
 }

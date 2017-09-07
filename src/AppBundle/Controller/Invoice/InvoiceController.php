@@ -8,6 +8,7 @@ use AppBundle\Form\Model\Invoice\Invoice as FormInvoice;
 use AppBundle\Form\Model\Invoice\Article as FormArticle;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use AppBundle\Form\Type\Invoice\InvoiceType;
+use IssueInvoices\Domain\Model\Invoice\CancelInvoice;
 
 class InvoiceController extends Controller
 {
@@ -24,9 +25,17 @@ class InvoiceController extends Controller
             );
             return $this->redirectToRoute('AppBundle_Administration_home');
         }
+        $racuni = [];
+        $invoices = $this->getUser()->getInvoices();
+        foreach ($invoices as $invoice) {
+        	$racuni[] = $invoice;
+        }
+       	// dump($racuni);
+       	// exit;
 
-        // Tu ce se prikazivati svi izdani racuni
-        return $this->render('AppBundle:Invoice:issuedInvoices.html.twig');
+        return $this->render('AppBundle:Invoice:issuedInvoices.html.twig', [
+            'invoices' => $invoices
+        ]);
     }
 
     /**
@@ -48,8 +57,7 @@ class InvoiceController extends Controller
                 'allArticles' => $userAdministration->getArticles()
             ]
         );
-        // \Kint::dump('Ivan');
-        // +d("Marko");
+        
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -71,11 +79,34 @@ class InvoiceController extends Controller
      */
     public function cancelInvoiceAction(Request $request, int $invoiceId)
     {
-        // Tu ce se pozivati app/domenski servis za tu radnju
         // Poziv aplikacijskog servisa koji ce stornirati racun
         $this->get('app.application_service.cancel_invoice')->cancelInvoice($invoiceId);
 
         return $this->redirectToRoute('AppBundle_Invoices_issuedInvoices');
+    }
+
+    /**
+     * @Route("/invoice/{invoiceId}", name="AppBundle_Invoice_viewInvoice")
+     */
+    public function viewInvoiceAction(Request $request, int $invoiceId)
+    {
+        $invoice = $this->get('app.invoice_repository')->find($invoiceId);
+        $isCancel = false;
+        // Saznati da li je racun storno
+        if ($invoice instanceOf CancelInvoice) {
+        	$isCancel = true;
+        }
+
+        if ($isCancel) {
+        	return $this->render('AppBundle:Invoice:viewCancelInvoice.html.twig', [
+            	'invoice' => $invoice
+        	]);
+        }
+        else {
+        	return $this->render('AppBundle:Invoice:viewInvoice.html.twig', [
+            	'invoice' => $invoice
+        	]);
+    	}
     }
 
     /**

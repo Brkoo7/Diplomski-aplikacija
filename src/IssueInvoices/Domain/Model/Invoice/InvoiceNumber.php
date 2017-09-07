@@ -51,4 +51,19 @@ class InvoiceNumber
         $this->office = $officeLabel;
         $this->cashRegister = $cashRegisterNumber;
     }
+
+    public function getOrdinal()
+    {
+        return $this->ordinal;
+    }
+
+    public function getOffice()
+    {
+        return $this->office;
+    }
+
+    public function getCashRegister()
+    {
+        return $this->cashRegister;
+    }
 }
