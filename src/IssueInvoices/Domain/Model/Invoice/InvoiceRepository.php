@@ -12,5 +12,5 @@ interface InvoiceRepository
 	 * 
 	 * @return int|null null ako ne postoji kombinacija u bazi
 	 */
-	public function findMaxOrdinalNumberForCombination(string $officeLabel, int $cashRegisterNumber, int $userId);
+	public function findMaxOrdinalNumberForCombination(string $officeLabel, int $cashRegisterNumber, int $userId, \DateTimeImmutable $startDate, \DateTimeImmutable $endDate);
 }

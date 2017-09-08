@@ -237,7 +237,9 @@ class InvoiceFactory
 
     private function generateInvoiceNumber(string $officeLabel, int $cashRegisterNumber): InvoiceNumber
     {
+        
         $ordinalNumber = $this->invoiceNumberGenerator->calculateOrdinalNumber($officeLabel, $cashRegisterNumber);
+
         return new InvoiceNumber($ordinalNumber, $officeLabel, $cashRegisterNumber);
     }
 }

@@ -22,12 +22,19 @@ class InvoiceNumberGenerator
 	public function calculateOrdinalNumber(string $officeLabel, int $cashRegisterNumber): int
 	{
 		$userId = $this->securityToken->getToken()->getUser()->getId();
+		$currentYear = (int) (new \DateTimeImmutable)->format("Y");
 
-		// Traži max broj za kombinaciju u trenutnoj godini
+		$startDate = (new \DateTimeImmutable('first day of January this year'))->setTime(0, 0, 0);
+		$endDate = (new \DateTimeImmutable('last day of December this year'))->setTime(0, 0, 0);
+
 		$ordinalNumber = $this->invoiceRepository->findMaxOrdinalNumberForCombination(
-			$officeLabel, $cashRegisterNumber, $userId);
-		
-		// Ako postoji kombinacija i ako je godina trenutnog racuna identicna kao u bazi
+			$officeLabel, 
+			$cashRegisterNumber, 
+			$userId,
+			$startDate,
+			$endDate
+		);
+
 		if ($ordinalNumber) {
 		 	return ++$ordinalNumber;
 		} else {
