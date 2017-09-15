@@ -1,4 +1,5 @@
 <?php
+
 namespace IssueInvoices\Domain\Model\Administration;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -141,82 +142,6 @@ class Administration
             }
         }
         return $cashRegisters;
-    }
-
-    public function getOperatorById(int $id): Operator
-    {
-        foreach ($this->operators as $operator) {
-            if ($operator->getId() === $id) {
-                return $operator;
-            }
-        }
-        return null;
-    }
-
-    public function removeOperatorById(int $id)
-    {
-         foreach ($this->operators as $operator) {
-            if ($operator->getId() === $id) {
-                $this->operators->removeElement($operator);
-            }
-        }
-    }
-
-    public function getOfficeById(int $id): Office
-    {
-        foreach ($this->offices as $office) {
-            if ($office->getId() === $id) {
-                return $office;
-            }
-        }
-        return null;
-    }
-
-    public function removeOfficeById(int $id)
-    {
-         foreach ($this->offices as $office) {
-            if ($office->getId() === $id) {
-                $this->offices->removeElement($office);
-            }
-        }
-    }
-
-    public function getBuyerById(int $id): Buyer
-    {
-        foreach ($this->buyers as $buyer) {
-            if ($buyer->getId() === $id) {
-                return $buyer;
-            }
-        }
-        return null;
-    }
-
-    public function removeBuyerById(int $id)
-    {
-         foreach ($this->buyers as $buyer) {
-            if ($buyer->getId() === $id) {
-                $this->buyers->removeElement($buyer);
-            }
-        }
-    }
-
-    public function getArticleById(int $id): Article
-    {
-        foreach ($this->articles as $article) {
-            if ($article->getId() === $id) {
-                return $article;
-            }
-        }
-        return null;
-    }
-
-    public function removeArticleById(int $id)
-    {
-         foreach ($this->articles as $article) {
-            if ($article->getId() === $id) {
-                $this->articles->removeElement($article);
-            }
-        }
     }
 
     public function isExistSeller(): bool

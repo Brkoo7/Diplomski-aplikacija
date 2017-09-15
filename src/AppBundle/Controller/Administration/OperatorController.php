@@ -38,7 +38,6 @@ class OperatorController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             $formOperator = $form->getData();
-            $entityManager = $this->getDoctrine()->getManager();
 
             $operator = new Operator(
                 $formOperator->name,
@@ -47,8 +46,7 @@ class OperatorController extends Controller
             );
 
             $userAdministration->addOperator($operator);
-            $entityManager->persist($userAdministration);
-            $entityManager->flush();
+            $this->get('app.administration_repository')->store($userAdministration);
 
             return $this->redirectToRoute('AppBundle_Administration_operators');
         }
@@ -64,9 +62,7 @@ class OperatorController extends Controller
     public function editOperatorAction(Request $request, int $operatorId)
     {
         $formOperator = new FormOperator();
-
-        $userAdministration = $this->getUser()->getAdministration();
-        $operator = $userAdministration->getOperatorById($operatorId);
+        $operator = $this->get('app.operator_repository')->find($operatorId);
 
         $formOperator->name = $operator->getName();
         $formOperator->oib = $operator->getOib();
@@ -77,13 +73,12 @@ class OperatorController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             $formOperator = $form->getData();
-            $entityManager = $this->getDoctrine()->getManager();
             
             $operator->setName($formOperator->name);
             $operator->setOib($formOperator->oib);
             $operator->setLabel($formOperator->label);
 
-            $entityManager->flush();
+            $this->get('app.operator_repository')->store($operator);
 
             return $this->redirectToRoute('AppBundle_Administration_operators'); 
         }
@@ -98,11 +93,8 @@ class OperatorController extends Controller
      */
     public function deleteOperatorAction(int $operatorId)
     {
-        $entityManager = $this->getDoctrine()->getManager();
-        $userAdministration = $this->getUser()->getAdministration();
-        $userAdministration->removeOperatorById($operatorId);
-
-        $entityManager->flush();
+        $operator = $this->get('app.operator_repository')->find($operatorId);
+        $this->get('app.operator_repository')->remove($operator);
 
         return $this->redirectToRoute('AppBundle_Administration_operators');
     }

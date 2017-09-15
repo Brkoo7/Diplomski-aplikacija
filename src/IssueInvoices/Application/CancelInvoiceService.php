@@ -8,24 +8,22 @@ use InvalidArgumentException;
 
 /**
  * Aplikacijski servis - USE CASE - storniraj mi taj i taj račun
+ * maknuti entitymanager
  */
 class CancelInvoiceService
 {
-	private $entityManager;
 	private $invoiceRepository;
 	private $invoiceFactory;
 
-	public function __construct(
-		$entityManager, 
+	public function __construct( 
 		InvoiceRepository $invoiceRepository,
 		InvoiceFactory $invoiceFactory
 	)
 	{
-		$this->entityManager = $entityManager;
 		$this->invoiceRepository = $invoiceRepository;
 		$this->invoiceFactory = $invoiceFactory;
 	}
-
+	
 	/**
 	 * Stvara storno račun originalnog računa
 	 *
@@ -50,8 +48,7 @@ class CancelInvoiceService
 
 		$invoice->cancel();
 		$cancelInvoice = $this->invoiceFactory->createCancelFromOriginalInvoice($invoice);
-		$this->entityManager->persist($cancelInvoice);
-		$this->entityManager->persist($invoice);
-		$this->entityManager->flush();
+		$this->invoiceRepository->store($cancelInvoice);
+		$this->invoiceRepository->store($invoice);
 	}
 }

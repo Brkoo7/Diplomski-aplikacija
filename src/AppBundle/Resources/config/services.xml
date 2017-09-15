@@ -19,19 +19,16 @@
         </service>
 
         <service id="app.application_service.issue_invoice" class="IssueInvoices\Application\IssueInvoiceService">
-            <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="service" id="app.invoice_repository" />
             <argument type="service" id="app.domain_factory.invoice" />
         </service>
 
         <service id="app.application_service.cancel_invoice" class="IssueInvoices\Application\CancelInvoiceService">
-            <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="service" id="app.invoice_repository" />
             <argument type="service" id="app.domain_factory.invoice" />
         </service>
 
         <service id="app.domain_service.invoice_number_generator" class="IssueInvoices\Domain\Service\InvoiceNumberGenerator">
-            <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="service" id="app.invoice_repository" />
             <argument type="service" id="security.token_storage" />
         </service>
@@ -58,10 +55,22 @@
             <argument>IssueInvoices\Domain\Model\Administration\Administration</argument>
         </service>
 
-        <service id="app.cashRegister_repository"
-            class="IssueInvoices\Infrastructure\Doctrine2\CashRegisterRepositoryImpl">
+        <service id="app.buyer_repository"
+            class="IssueInvoices\Infrastructure\Doctrine2\BuyerRepositoryImpl">
             <factory service="doctrine.orm.entity_manager" method="getRepository"/>
-            <argument>IssueInvoices\Domain\Model\Administration\CashRegister</argument>
+            <argument>IssueInvoices\Domain\Model\Administration\Buyer</argument>
+        </service>
+
+        <service id="app.article_repository"
+            class="IssueInvoices\Infrastructure\Doctrine2\ArticleRepositoryImpl">
+            <factory service="doctrine.orm.entity_manager" method="getRepository"/>
+            <argument>IssueInvoices\Domain\Model\Administration\Article</argument>
+        </service>
+
+        <service id="app.seller_repository"
+            class="IssueInvoices\Infrastructure\Doctrine2\SellerRepositoryImpl">
+            <factory service="doctrine.orm.entity_manager" method="getRepository"/>
+            <argument>IssueInvoices\Domain\Model\Administration\Seller</argument>
         </service>
 
         <service id="app.office_repository"
@@ -70,11 +79,19 @@
             <argument>IssueInvoices\Domain\Model\Administration\Office</argument>
         </service>
 
-        <service id="app.article_repository"
-            class="IssueInvoices\Infrastructure\Doctrine2\ArticleRepositoryImpl">
+        <service id="app.cashRegister_repository"
+            class="IssueInvoices\Infrastructure\Doctrine2\CashRegisterRepositoryImpl">
             <factory service="doctrine.orm.entity_manager" method="getRepository"/>
-            <argument>IssueInvoices\Domain\Model\Administration\Article</argument>
+            <argument>IssueInvoices\Domain\Model\Administration\CashRegister</argument>
         </service>
+
+        <service id="app.operator_repository"
+            class="IssueInvoices\Infrastructure\Doctrine2\OperatorRepositoryImpl">
+            <factory service="doctrine.orm.entity_manager" method="getRepository"/>
+            <argument>IssueInvoices\Domain\Model\Administration\Operator</argument>
+        </service>
+
+        
 
         <service id="app.invoice_repository"
             class="IssueInvoices\Infrastructure\Doctrine2\InvoiceRepositoryImpl">

@@ -17,7 +17,6 @@ class BuyerController extends Controller
     {
         $userAdministration = $this->getUser()->getAdministration();
 
-        // Dohvatiti sve kupce iz administracije korisnika
         $buyers = $userAdministration->getBuyers();
 
         return $this->render('AppBundle:Administration:buyers.html.twig', [
@@ -48,8 +47,7 @@ class BuyerController extends Controller
             $buyer->setPdvID($formBuyer->pdvID);
             $userAdministration->addBuyer($buyer);
 
-            $entityManager->persist($userAdministration);
-            $entityManager->flush();
+            $this->get('app.administration_repository')->store($userAdministration);
 
             return $this->redirectToRoute('AppBundle_Administration_buyers');
         }
@@ -65,10 +63,7 @@ class BuyerController extends Controller
     public function editBuyerAction(Request $request, int $buyerId)
     {
         $formBuyer = new FormBuyer();
-
-        // Nađi kupca za poslani slug u ruti
-        $userAdministration = $this->getUser()->getAdministration();
-        $buyer = $userAdministration->getBuyerById($buyerId);
+        $buyer = $this->get('app.buyer_repository')->find($buyerId);
 
         $formBuyer->name = $buyer->getName();
         $formBuyer->address = $buyer->getAddress();
@@ -87,7 +82,8 @@ class BuyerController extends Controller
             $buyer->setOib($formBuyer->oib);
             $buyer->setPdvId($formBuyer->pdvID);
 
-            $entityManager->flush();
+            $this->get('app.buyer_repository')->store($buyer);
+
             return $this->redirectToRoute('AppBundle_Administration_buyers'); 
         }
 
@@ -101,11 +97,8 @@ class BuyerController extends Controller
      */
     public function deleteBuyerAction(int $buyerId)
     {
-        $entityManager = $this->getDoctrine()->getManager();
-        $userAdministration = $this->getUser()->getAdministration();
-        $userAdministration->removeBuyerById($buyerId);
-
-        $entityManager->flush();
+        $buyer = $this->get('app.buyer_repository')->find($buyerId);
+        $this->get('app.buyer_repository')->remove($buyer);
 
         return $this->redirectToRoute('AppBundle_Administration_buyers');
     }

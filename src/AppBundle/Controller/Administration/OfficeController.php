@@ -47,8 +47,7 @@ class OfficeController extends Controller
             );
 
             $userAdministration->addOffice($office);
-            $entityManager->persist($userAdministration);
-            $entityManager->flush();
+            $this->get('app.administration_repository')->store($userAdministration);
 
             return $this->redirectToRoute('AppBundle_Administration_offices');
         }
@@ -64,10 +63,7 @@ class OfficeController extends Controller
     public function editOfficeAction(Request $request, int $officeId)
     {
         $formOffice = new FormOffice();
-
-        // Nađi poslovni prostor za poslani slug u ruti
-        $userAdministration = $this->getUser()->getAdministration();
-        $office = $userAdministration->getOfficeById($officeId);
+        $office = $this->get('app.office_repository')->find($officeId);
 
         $formOffice->label = $office->getLabel();
         $formOffice->address = $office->getAddress();
@@ -78,13 +74,12 @@ class OfficeController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             $formOffice = $form->getData();
-            $entityManager = $this->getDoctrine()->getManager();
             
             $office->setLabel($formOffice->label);
             $office->setAddress($formOffice->address);
             $office->setCity($formOffice->city);
 
-            $entityManager->flush();
+            $this->get('app.office_repository')->store($office);
 
             return $this->redirectToRoute('AppBundle_Administration_offices'); 
         }
@@ -99,12 +94,8 @@ class OfficeController extends Controller
      */
     public function deleteOfficeAction(int $officeId)
     {
-        $entityManager = $this->getDoctrine()->getManager();
-        
-        $userAdministration = $this->getUser()->getAdministration();
-        $userAdministration->removeOfficeById($officeId);
-
-        $entityManager->flush();
+        $office = $this->get('app.office_repository')->find($officeId);
+        $this->get('app.office_repository')->remove($office);
 
         return $this->redirectToRoute('AppBundle_Administration_offices');
     }

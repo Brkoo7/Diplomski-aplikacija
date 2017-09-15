@@ -16,7 +16,6 @@ class ArticleController extends Controller
     public function articlesAction(Request $request)
     {
         $userAdministration = $this->getUser()->getAdministration();
-
         $articles = $userAdministration->getArticles();
 
         return $this->render('AppBundle:Administration:articles.html.twig', [
@@ -47,8 +46,7 @@ class ArticleController extends Controller
             $userAdministration->addArticle($article);
 
             // Spremiti
-            $entityManager->persist($userAdministration);
-            $entityManager->flush();
+            $this->get('app.administration_repository')->store($userAdministration);
 
             return $this->redirectToRoute('AppBundle_Administration_articles');
         }
@@ -64,9 +62,7 @@ class ArticleController extends Controller
     public function editArticleAction(Request $request, int $articleId)
     {
         $formArticle = new FormArticle();
-
-        $userAdministration = $this->getUser()->getAdministration();
-        $article = $userAdministration->getArticleById($articleId);
+        $article = $this->get('app.article_repository')->find($articleId);
 
         $formArticle->name = $article->getName();
         $formArticle->totalPrice = $article->getTotalPrice();
@@ -77,13 +73,13 @@ class ArticleController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             $formArticle = $form->getData();
-            $entityManager = $this->getDoctrine()->getManager();
             
             $article->setName($formArticle->name);
             $article->setTotalPrice($formArticle->totalPrice);
             $article->setTaxRate($formArticle->taxRate);
 
-            $entityManager->flush();
+            $this->get('app.article_repository')->store($article);
+
             return $this->redirectToRoute('AppBundle_Administration_articles'); 
         }
 
@@ -97,12 +93,8 @@ class ArticleController extends Controller
      */
     public function deleteArticleAction(int $articleId)
     {
-        $entityManager = $this->getDoctrine()->getManager();
-
-        $userAdministration = $this->getUser()->getAdministration();
-        $userAdministration->removeArticleById($articleId);
-
-        $entityManager->flush();
+        $article = $this->get('app.article_repository')->find($articleId);
+        $this->get('app.article_repository')->remove($article);
 
         return $this->redirectToRoute('AppBundle_Administration_articles');
     }

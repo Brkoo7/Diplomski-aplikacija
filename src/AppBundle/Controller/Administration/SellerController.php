@@ -39,12 +39,10 @@ class SellerController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             $formSeller = $form->getData();
-            $entityManager = $this->getDoctrine()->getManager();
             $seller = (new SellerFactory())->fromData($formSeller);
 
             $userAdministration->setSeller($seller);
-            $entityManager->persist($userAdministration);
-            $entityManager->flush();
+            $this->get('app.administration_repository')->store($userAdministration);
 
             return $this->redirectToRoute('AppBundle_Administration_seller');
         }
@@ -81,10 +79,9 @@ class SellerController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             $formSeller = $form->getData();
-            $entityManager = $this->getDoctrine()->getManager();
             $seller = (new SellerFactory())->fromDataAndObject($formSeller, $seller);
 
-            $entityManager->flush();
+            $this->get('app.seller_repository')->store($seller);
             return $this->redirectToRoute('AppBundle_Administration_seller'); 
         }
 

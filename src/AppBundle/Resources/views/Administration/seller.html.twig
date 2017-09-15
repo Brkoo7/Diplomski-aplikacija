@@ -10,15 +10,12 @@
         </li>
     </ol>
     <div class="row administration-title">
-        <div class="form-group col-md-4">
-            <input type="text" placeholder="Pretraživanje po nazivu" class="form-control" id="usr">
-        </div>
         {% if seller is null %}
-            <a href="{{path('AppBundle_Administration_addSeller')}}"><button type="button" id="addOneItem" class="btn btn-lg btn-info col-md-2 col-md-offset-5">
+            <a href="{{path('AppBundle_Administration_addSeller')}}"><button type="button" id="addOneItem" class="btn btn-lg btn-info col-md-2">
             Unesi novog
             </button></a>
         {% else %}
-            <a href="{{ path('AppBundle_Administration_editSeller', {'sellerId': seller.id})}}"><button type="button" id="addOneItem" class="btn btn-lg btn-info col-md-2 col-md-offset-5">
+            <a href="{{ path('AppBundle_Administration_editSeller', {'sellerId': seller.id})}}"><button type="button" id="addOneItem" class="btn btn-lg btn-info col-md-2">
             Uredi
             </button></a>
         {% endif %}

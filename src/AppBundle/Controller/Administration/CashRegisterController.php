@@ -29,7 +29,7 @@ class CashRegisterController extends Controller
     public function addCashRegisterAction(Request $request)
     {
         $formCashRegister = new FormCashRegister();
-        // Dohvatiti administraciju prijavljenog korisnika
+
         $userAdministration = $this->getUser()->getAdministration();
         $offices = $userAdministration->getOffices();
 
@@ -43,7 +43,6 @@ class CashRegisterController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             $formCashRegister = $form->getData();
-            $entityManager = $this->getDoctrine()->getManager();
 
             $cashRegister = new CashRegister(
                 $formCashRegister->number
@@ -51,8 +50,7 @@ class CashRegisterController extends Controller
             $office = $formCashRegister->office;
             $cashRegister->setOffice($office);
 
-            $entityManager->persist($cashRegister);
-            $entityManager->flush();
+            $this->get('app.cashRegister_repository')->store($cashRegister);
 
             return $this->redirectToRoute('AppBundle_Administration_cashRegisters');
         }
@@ -81,15 +79,11 @@ class CashRegisterController extends Controller
         );
         $form->handleRequest($request);
 
-
         if ($form->isSubmitted() && $form->isValid()) {
             $formCashRegister = $form->getData();
-            $entityManager = $this->getDoctrine()->getManager();
-            
             $cashRegister->setNumber($formCashRegister->number);
 
-            $entityManager->persist($cashRegister);
-            $entityManager->flush();
+            $this->get('app.casRegister_repository')->store($cashRegister);
 
             return $this->redirectToRoute('AppBundle_Administration_cashRegisters'); 
         }
@@ -104,11 +98,8 @@ class CashRegisterController extends Controller
      */
     public function deleteCashRegisterAction(int $cashRegisterId)
     {
-        $entityManager = $this->getDoctrine()->getManager();
         $cashRegister = $this->get('app.cashRegister_repository')->find($cashRegisterId);
-
-        $entityManager->remove($cashRegister);
-        $entityManager->flush();
+        $this->get('app.cashRegister_repository')->remove($cashRegister);
 
         return $this->redirectToRoute('AppBundle_Administration_cashRegisters');
     }

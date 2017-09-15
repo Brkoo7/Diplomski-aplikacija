@@ -8,13 +8,11 @@ use IssueInvoices\Domain\Model\Invoice\InvoiceRepository;
  */
 class InvoiceNumberGenerator
 {
-	private $entityManager;
 	private $invoiceRepository;
 	private $securityToken;
 
-	public function __construct($entityManager, InvoiceRepository $invoiceRepository, $securityToken)
+	public function __construct(InvoiceRepository $invoiceRepository, $securityToken)
 	{
-		$this->entityManager = $entityManager;
 		$this->invoiceRepository = $invoiceRepository;
 		$this->securityToken = $securityToken;
 	}

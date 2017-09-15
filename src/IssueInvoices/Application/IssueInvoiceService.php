@@ -9,13 +9,11 @@ use IssueInvoices\Domain\Model\Invoice\InvoiceFactory;
  */
 class IssueInvoiceService
 {
-	private $entityManager;
 	private $invoiceRepository;
 	private $invoiceFactory;
 
-	public function __construct($entityManager, InvoiceRepository $invoiceRepository, InvoiceFactory $invoiceFactory)
+	public function __construct(InvoiceRepository $invoiceRepository, InvoiceFactory $invoiceFactory)
 	{
-		$this->entityManager = $entityManager;
 		$this->invoiceRepository = $invoiceRepository;
 		$this->invoiceFactory = $invoiceFactory;
 	}
@@ -31,7 +29,6 @@ class IssueInvoiceService
 	public function issueInvoice($formInvoice, $administration)
 	{
 		$invoice = $this->invoiceFactory->createFromData($formInvoice, $administration);
-		$this->entityManager->persist($invoice);
-		$this->entityManager->flush();
+		$this->invoiceRepository->store($invoice);
 	}
 }

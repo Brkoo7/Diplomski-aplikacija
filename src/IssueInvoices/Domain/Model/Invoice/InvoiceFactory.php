@@ -227,7 +227,7 @@ class InvoiceFactory
                 $totalAmount += $amount;
             }
 
-            $taxAmount = $totalAmount * ($taxRate/100);
+            $taxAmount = round($totalAmount * ($taxRate/100), 2);
             $baseAmount = $totalAmount - $taxAmount;
 
             $taxRecapitulation = new TaxRecapitulation($taxRate, $baseAmount, $taxAmount);
