@@ -1,4 +1,5 @@
 <?php
+
 namespace IssueInvoices\Application;
 
 use IssueInvoices\Domain\Model\Invoice\InvoiceRepository;
@@ -8,7 +9,6 @@ use InvalidArgumentException;
 
 /**
  * Aplikacijski servis - USE CASE - storniraj mi taj i taj račun
- * maknuti entitymanager
  */
 class CancelInvoiceService
 {
@@ -46,8 +46,9 @@ class CancelInvoiceService
 			throw CancelInvoiceException::invoiceIsCancel();
 		}
 
-		$invoice->cancel();
 		$cancelInvoice = $this->invoiceFactory->createCancelFromOriginalInvoice($invoice);
+		$invoice->cancel();
+
 		$this->invoiceRepository->store($cancelInvoice);
 		$this->invoiceRepository->store($invoice);
 	}

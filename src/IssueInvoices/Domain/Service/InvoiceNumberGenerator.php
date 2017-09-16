@@ -9,19 +9,17 @@ use IssueInvoices\Domain\Model\Invoice\InvoiceRepository;
 class InvoiceNumberGenerator
 {
 	private $invoiceRepository;
-	private $securityToken;
 
-	public function __construct(InvoiceRepository $invoiceRepository, $securityToken)
+	public function __construct(InvoiceRepository $invoiceRepository)
 	{
 		$this->invoiceRepository = $invoiceRepository;
-		$this->securityToken = $securityToken;
 	}
 
-	public function calculateOrdinalNumber(string $officeLabel, int $cashRegisterNumber): int
-	{
-		$userId = $this->securityToken->getToken()->getUser()->getId();
-		$currentYear = (int) (new \DateTimeImmutable)->format("Y");
-
+	public function calculateOrdinalNumber(
+		string $officeLabel, 
+		int $cashRegisterNumber, 
+		int $userId
+	): int {
 		$startDate = (new \DateTimeImmutable('first day of January this year'))->setTime(0, 0, 0);
 		$endDate = (new \DateTimeImmutable('last day of December this year'))->setTime(0, 0, 0);
 

@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity
  */
-class CancelInvoice extends VATInvoice
+class CancelInvoice extends Invoice
 {
     /**
      * Povezani račun iz kojeg je nastao storno račun

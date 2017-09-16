@@ -1,4 +1,5 @@
 <?php
+
 namespace IssueInvoices\Domain\Model\Invoice;
 
 use IssueInvoices\Domain\Service\InvoiceNumberGenerator;
@@ -6,12 +7,10 @@ use IssueInvoices\Domain\Service\InvoiceNumberGenerator;
 class InvoiceFactory
 {
 	private $invoiceNumberGenerator;
-    private $securityToken;
 
-    public function __construct(InvoiceNumberGenerator $invoiceNumberGenerator, $securityToken) 
+    public function __construct(InvoiceNumberGenerator $invoiceNumberGenerator) 
 	{
 		$this->invoiceNumberGenerator = $invoiceNumberGenerator;
-        $this->securityToken = $securityToken;
 	}
 
     public function createFromData($data, $administration): BaseInvoice
@@ -23,7 +22,7 @@ class InvoiceFactory
     	if ($isInVatSystem) {
     		// Izdajemo fiskalni racun s PDV-om
     		$invoice = new VATInvoice();
-
+            $invoice->setUser($administration->getUser());
     		$this->addBasicMandatoryInfo($invoice, $data, $seller);
         
             // Izracunamo kalkulaciju računa
@@ -35,14 +34,12 @@ class InvoiceFactory
     	} else {
     		// Izdajemo fiskalni racun bez PDV-a
     		$invoice = new Invoice();
-
+            $invoice->setUser($administration->getUser());
     		$this->addBasicMandatoryInfo($invoice, $data, $seller);
 
             // Izracunamo kalkulaciju računa
             $this->doInvoiceCalculation($invoice, $isInVatSystem);
     	}
-
-        $invoice->setUser($this->securityToken->getToken()->getUser());
 
         return $invoice;
     }
@@ -63,9 +60,6 @@ class InvoiceFactory
         $cancelInvoice->setBaseAmount(-($invoice->getBaseAmount()));
         $cancelInvoice->setTotalAmount(-($invoice->getTotalAmount()));
 
-        if ($invoice instanceOf VATInvoice) {
-            $cancelInvoice->setTaxAmount(-($invoice->getTaxAmount()));
-        }
         $cancelInvoice->setPaymentType($invoice->getPaymentType());
         
         // Generiranje broja računa
@@ -73,11 +67,13 @@ class InvoiceFactory
         $cashRegisterNumber = $invoice->getNumber()->getCashRegister();
 
         $cancelInvoice->setNumber(
-            $this->generateInvoiceNumber($officeLabel, $cashRegisterNumber)
+            $this->generateInvoiceNumber(
+                $officeLabel, 
+                $cashRegisterNumber,
+                $invoice->getUser()->getId()
+            )
         );
-
-        // Postaviti trenutnog korisnika
-        $cancelInvoice->setUser($this->securityToken->getToken()->getUser());
+        $cancelInvoice->setUser($invoice->getUser());
 
         return $cancelInvoice;
     }
@@ -178,7 +174,11 @@ class InvoiceFactory
         $officeLabel = $data->office->getLabel();
         $cashRegisterNumber = $data->cashRegister->getNumber();
         $invoice->setNumber(
-            $this->generateInvoiceNumber($officeLabel, $cashRegisterNumber)
+            $this->generateInvoiceNumber(
+                $officeLabel, 
+                $cashRegisterNumber,
+                $invoice->getUser()->getId()
+            )
         );
     }
 
@@ -235,10 +235,14 @@ class InvoiceFactory
         }
     }
 
-    private function generateInvoiceNumber(string $officeLabel, int $cashRegisterNumber): InvoiceNumber
+    private function generateInvoiceNumber(
+        string $officeLabel, 
+        int $cashRegisterNumber,
+        int $userId
+    ): InvoiceNumber
     {
         
-        $ordinalNumber = $this->invoiceNumberGenerator->calculateOrdinalNumber($officeLabel, $cashRegisterNumber);
+        $ordinalNumber = $this->invoiceNumberGenerator->calculateOrdinalNumber($officeLabel, $cashRegisterNumber, $userId);
 
         return new InvoiceNumber($ordinalNumber, $officeLabel, $cashRegisterNumber);
     }

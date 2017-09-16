@@ -30,12 +30,10 @@
 
         <service id="app.domain_service.invoice_number_generator" class="IssueInvoices\Domain\Service\InvoiceNumberGenerator">
             <argument type="service" id="app.invoice_repository" />
-            <argument type="service" id="security.token_storage" />
         </service>
 
         <service id="app.domain_factory.invoice" class="IssueInvoices\Domain\Model\Invoice\InvoiceFactory">
             <argument type="service" id="app.domain_service.invoice_number_generator" />
-            <argument type="service" id="security.token_storage" />
         </service>
         
         <!--
@@ -90,8 +88,6 @@
             <factory service="doctrine.orm.entity_manager" method="getRepository"/>
             <argument>IssueInvoices\Domain\Model\Administration\Operator</argument>
         </service>
-
-        
 
         <service id="app.invoice_repository"
             class="IssueInvoices\Infrastructure\Doctrine2\InvoiceRepositoryImpl">

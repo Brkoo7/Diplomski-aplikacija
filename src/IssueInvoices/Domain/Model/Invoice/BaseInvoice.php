@@ -176,6 +176,11 @@ abstract class BaseInvoice
         return $this->buyer;
     }
 
+    public function getUser()
+    {
+        return $this->user;
+    }
+
     /**
      * Da li je račun storniran
      * 

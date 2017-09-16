@@ -133,6 +133,11 @@ class Administration
         return $this->operators;
     }
 
+    public function getUser()
+    {
+        return $this->user;
+    }
+
     public function getAllCashRegisters()
     {
         $cashRegisters = [];

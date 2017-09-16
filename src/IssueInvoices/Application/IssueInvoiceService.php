@@ -1,4 +1,5 @@
 <?php
+
 namespace IssueInvoices\Application;
 
 use IssueInvoices\Domain\Model\Invoice\InvoiceRepository;
@@ -12,8 +13,10 @@ class IssueInvoiceService
 	private $invoiceRepository;
 	private $invoiceFactory;
 
-	public function __construct(InvoiceRepository $invoiceRepository, InvoiceFactory $invoiceFactory)
-	{
+	public function __construct(
+		InvoiceRepository $invoiceRepository, 
+		InvoiceFactory $invoiceFactory
+	) {
 		$this->invoiceRepository = $invoiceRepository;
 		$this->invoiceFactory = $invoiceFactory;
 	}

@@ -1,4 +1,5 @@
 <?php
+
 namespace AppBundle\Controller\Invoice;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -25,13 +26,8 @@ class InvoiceController extends Controller
             );
             return $this->redirectToRoute('AppBundle_Administration_home');
         }
-        $racuni = [];
+        
         $invoices = $this->getUser()->getInvoices();
-        foreach ($invoices as $invoice) {
-        	$racuni[] = $invoice;
-        }
-       	// dump($racuni);
-       	// exit;
 
         return $this->render('AppBundle:Invoice:issuedInvoices.html.twig', [
             'invoices' => $invoices

@@ -1,4 +1,5 @@
 <?php
+
 namespace IssueInvoices\Domain\Model\Invoice;
     
 /**
