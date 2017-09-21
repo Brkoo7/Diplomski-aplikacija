@@ -23,7 +23,7 @@ class ArticleType extends AbstractType
              ->add('article', ChoiceType::class, [
                 'choices' => $allArticles,
                 'choice_label' => function($article, $key, $index) {
-                    return strtoupper($article->getName());
+                    return $article->getName();
                 },
                 'choice_value' => 'id',
                 'expanded' => false,
@@ -34,13 +34,13 @@ class ArticleType extends AbstractType
             ->add('totalPrice', MoneyType::class, [
                 'currency' => 'HRK',
                 'label' => 'Cijena',
-                'data' => $allArticles[0]->getTotalPrice(),
+                'data' => count($allArticles) ? $allArticles[0]->getTotalPrice() : null,
                 'attr' => ['class' => 'price']
             ])
             ->add('taxRate', PercentType::class, [
                 'label' => 'PDV',
                 'type' => 'integer',
-                'data' => $allArticles[0]->getTaxRate(),
+                'data' => count($allArticles) ? $allArticles[0]->getTaxRate() : null,
                 'attr' => ['class' => 'tax']
             ])
             ->add('quantity', IntegerType::class, [
